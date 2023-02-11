@@ -72,7 +72,7 @@ const session = new Session({
     authorization: "Berear ...",
   },
 });
-session.default_options // change them anytime!
+session.default_options; // change them anytime!
 
 session
   .req({
@@ -171,7 +171,7 @@ const session = new Session({
     authorization: "Berear ...",
   },
 });
-session.default_options // change them anytime!
+session.default_options; // change them anytime!
 
 const response = await session.req("discord.com");
 
@@ -243,7 +243,7 @@ console.log(response.headers["content-type"], response.data.length);
 
 ## Request Config
 
-> For ease of use you can simply stop a `krop("www.google.com")` and it will **get** with the default options
+> Tip: _By default, `krop` is a function, to make a quick `get` request just pass the `string` containing the domain, example: `krop("www.google.com")`_
 
 ```javascript
 {
@@ -288,9 +288,9 @@ console.log(response.headers["content-type"], response.data.length);
 }
 ```
 
-## Response Config
+## Response Example
 
-> Of course, it always sees these parameters as a response, but depending on the level of the HTTP protocol, more things may come up
+> It always sees these parameters as a response, but depending on the HTTP protocol level, more things can come up
 
 ```javascript
 {
