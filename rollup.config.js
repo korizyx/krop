@@ -62,7 +62,7 @@ const buildConfig = ({es5, browser = true, minifiedVersion = true, ...config}) =
 
 export default async () => {
   const year = new Date().getFullYear();
-  const banner = `// Hermes v${lib.version} Copyright (c) ${year} ${lib.author} and contributors`;
+  const banner = `// Krop v${lib.version} Copyright (c) ${year} ${lib.author} and contributors`;
 
   return [
     // browser ESM bundle for CDN
