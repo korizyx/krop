@@ -21,25 +21,33 @@ const buildConfig = ({es5, browser = true, minifiedVersion = true, ...config}) =
   extArr.shift();
 
 
-  const build = ({minified}) => ({
+  const build = ({ minified }) => ({
     input: namedInput,
     ...config,
     output: {
       ...config.output,
-      file: `${path.dirname(file)}/${basename}.${(minified ? ['min', ...extArr] : extArr).join('.')}`
+      file: `${path.dirname(file)}/${basename}.${(minified
+        ? ["min", ...extArr]
+        : extArr
+      ).join(".")}`,
+      exports: "mixed",
     },
     plugins: [
       json(),
-      resolve({browser}),
+      resolve({ browser }),
       commonjs(),
       minified && terser(),
       minified && bundleSize(),
-      ...(es5 ? [babel({
-        babelHelpers: 'bundled',
-        presets: ['@babel/preset-env']
-      })] : []),
+      ...(es5
+        ? [
+            babel({
+              babelHelpers: "bundled",
+              presets: ["@babel/preset-env"],
+            }),
+          ]
+        : []),
       ...(config.plugins || []),
-    ]
+    ],
   });
 
   const configs = [

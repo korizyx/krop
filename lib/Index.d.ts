@@ -11,7 +11,7 @@ declare interface KropJsonProxy {
   password?: string;
 }
 
-declare interface KropRequestOptions {
+declare interface KropRequestOptions<D = any> {
   url: string;
   port?: number;
   method?:
@@ -42,13 +42,16 @@ declare interface KropRequestOptions {
   http2?: boolean;
 }
 
-declare function request(options: KropRequestOptions): Promise<KropResponse>;
+declare function request(
+  ...args: KropRequestOptions | string
+): Promise<KropResponse>;
 
 export default request;
 export class Session {
   declare cookies: string;
+  constructor(default_options?: KropRequestOptions);
 
-  req(options: KropRequestOptions): Promise<KropResponse>;
+  req(...args: KropRequestOptions | string): Promise<KropResponse>;
 
   addCookie(
     cookie: string | { name: string; value: string | number }
