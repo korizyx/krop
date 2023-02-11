@@ -1,15 +1,15 @@
 <div align="center">
-    <img src="https://images.vexels.com/media/users/3/190673/isolated/preview/6c2710b0ba8104a74f20b22ce0d93cb6-curso-grego-deus-hermes.png" />
+    <img src="https://i.imgur.com/GbmmPAs.png" />
     <h1>powerful and fast</h1>
     <small>Make simple and fast stealth requests, supporting the recently tls versions and any proxies (auth/port:ip). To make better stealth request</small>
 </div>
 <div align="center">
 
-[![npm version](https://img.shields.io/npm/v/@kori_xyz/hermes.svg)](https://www.npmjs.org/package/@kori_xyz/hermes)
-[![Coverage Status](https://coveralls.io/repos/github/kori-lab/hermes/badge.svg?branch=main)](https://coveralls.io/github/kori-lab/hermes?branch=main)
-[![install size](https://img.shields.io/github/repo-size/kori-lab/hermes)](https://img.shields.io/github/repo-size/kori-lab/hermes)
-[![npm downloads](https://img.shields.io/npm/dm/@kori_xyz/hermes.svg)](https://npm-stat.com/charts.html?package=@kori_xyz/hermes)
-[![Known Vulnerabilities](https://snyk.io/test/npm/@kori_xyz/hermes/badge.svg)](https://snyk.io/test/npm/@kori_xyz/hermes)
+[![npm version](https://img.shields.io/npm/v/krop.svg)](https://www.npmjs.org/package/krop)
+[![Coverage Status](https://coveralls.io/repos/github/korizyx/krop/badge.svg?branch=master)](https://coveralls.io/github/korizyx/krop?branch=master)
+![GitHub file size in bytes](https://img.shields.io/github/size/korizyx/krop/dist/krop.min.js)
+[![npm downloads](https://img.shields.io/npm/dm/krop.svg)](https://npm-stat.com/charts.html?package=krop)
+[![Known Vulnerabilities](https://snyk.io/test/npm/krop/badge.svg)](https://snyk.io/test/npm/krop)
 
 </div>
 
@@ -27,7 +27,7 @@
 - [x] Already with types
 - [x] **0 dependencies**
 - [x] Fastest between **Superagent**, **Axios** and **Got**
-<img src="https://i.imgur.com/uisHOpg.png">
+      <img src="https://i.imgur.com/uisHOpg.png">
 
 ## Install
 
