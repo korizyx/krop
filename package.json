@@ -1,7 +1,7 @@
 {
   "name": "krop",
   "description": "make a fast requests and simplify your code",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "main": "./lib/Index.js",
   "types": "./lib/Index.d.ts",
   "license": "MIT",
@@ -12,11 +12,11 @@
         "default": "./lib/Index.d.ts"
       },
       "browser": {
-        "require": "./dist/browser/hermes.cjs",
+        "require": "./dist/browser/krop.cjs",
         "default": "./lib/Index.js"
       },
       "default": {
-        "require": "./dist/node/hermes.cjs",
+        "require": "./dist/node/krop.cjs",
         "default": "./lib/Index.js"
       }
     },
