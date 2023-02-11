@@ -1,4 +1,4 @@
-// Hermes v0.0.5 Copyright (c) 2023 Kori <korinamez@gmail.com> and contributors
+// Hermes v0.0.6 Copyright (c) 2023 Kori <korinamez@gmail.com> and contributors
 'use strict';
 
 var http = require('http');
@@ -365,8 +365,6 @@ class Session {
   }
 }
 
-Request.Session = Session;
-
 [
   "get",
   "post",
@@ -381,6 +379,8 @@ Request.Session = Session;
 ].forEach((method) => {
   Request[method] = (options) => Request({ ...options, method });
 });
+
+assert.equal(Request.Session, Session);
 
 module.exports = Request;
 //# sourceMappingURL=krop.cjs.map

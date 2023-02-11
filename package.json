@@ -1,7 +1,7 @@
 {
   "name": "krop",
   "description": "make a fast requests and simplify your code",
-  "version": "0.0.5",
+  "version": "0.0.6",
   "main": "./lib/Index.js",
   "types": "./lib/Index.d.ts",
   "license": "MIT",
@@ -26,7 +26,8 @@
     "build": "rollup -c -m --bundleConfigAsCjs",
     "update:version": "node update_version.js",
     "deploy": "yarn update:version",
-    "start": "node ."
+    "start": "node .",
+    "test": "node --experimental-vm-modules --no-warnings ./node_modules/jest/bin/jest.js"
   },
   "keywords": [
     "request",

@@ -1,4 +1,4 @@
-// Hermes v0.0.5 Copyright (c) 2023 Kori <korinamez@gmail.com> and contributors
+// Hermes v0.0.6 Copyright (c) 2023 Kori <korinamez@gmail.com> and contributors
 (function (global, factory) {
   typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory(require('http'), require('https'), require('http2')) :
   typeof define === 'function' && define.amd ? define(['http', 'https', 'http2'], factory) :
@@ -942,7 +942,6 @@
     return Session;
   }();
 
-  Request.Session = Session;
   ["get", "post", "patch", "options", "delete", "head", "put", "link", "unlink", "purge"].forEach(function (method) {
     Request[method] = function (options) {
       return Request(_objectSpread2(_objectSpread2({}, options), {}, {
@@ -950,6 +949,7 @@
       }));
     };
   });
+  assert.equal(Request.Session, Session);
 
   return Request;
 

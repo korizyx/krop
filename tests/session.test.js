@@ -1,13 +1,11 @@
 import { Session } from "../lib/Index.js";
 
-const client = new Session();
+test("session collect cookies", async () => {
+  const client = new Session();
 
-const response = await client.req({
-  url: "https://discord.com",
+  const { status } = await client.req({
+    url: "https://discord.com",
+  });
+
+  expect(client.cookies.length > 0).toBe(true);
 });
-
-console.log(
-  response,
-  // cookies saved from previous request (automatic save)
-  client.cookies
-);

@@ -1,4 +1,4 @@
-// Hermes v0.0.5 Copyright (c) 2023 Kori <korinamez@gmail.com> and contributors
+// Hermes v0.0.6 Copyright (c) 2023 Kori <korinamez@gmail.com> and contributors
 import { request } from 'http';
 import { Agent, request as request$1 } from 'https';
 import { constants, connect } from 'http2';
@@ -363,8 +363,6 @@ class Session {
   }
 }
 
-Request.Session = Session;
-
 [
   "get",
   "post",
@@ -379,6 +377,8 @@ Request.Session = Session;
 ].forEach((method) => {
   Request[method] = (options) => Request({ ...options, method });
 });
+
+assert.equal(Request.Session, Session);
 
 export { Request as default };
 //# sourceMappingURL=krop.js.map

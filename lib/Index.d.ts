@@ -12,7 +12,7 @@ declare interface HermesResponse {
   upgrade: boolean;
   url: string;
   method: null | string;
-  statusCode: number;
+  status: number;
   statusMessage: string;
   client: TLSSocket;
   _consuming: boolean;
