@@ -67,7 +67,7 @@
     "rollup-plugin-bundle-size": "^1.0.3",
     "rollup-plugin-terser": "^7.0.2"
   },
-  "jsdelivr": "dist/hermes.min.js",
-  "unpkg": "dist/hermes.min.js",
+  "jsdelivr": "dist/krop.min.js",
+  "unpkg": "dist/krop.min.js",
   "typings": "./lib/Index.d.ts"
 }
