@@ -49,16 +49,32 @@ npm install krop
 
 > this module is avaliable for CommonJS or ESM/Typescript
 
-### CommonJS
+<details>
+  <summary> <b> CommonJS </b> </summary>
+  <br>
+
+simple get
+
+```javascript
+const krop = require("krop");
+
+krop("discord.com").then(console.log);
+```
 
 cookie session
 
 ```javascript
 const { Session } = require("krop");
 
-const client = new Session();
+const session = new Session({
+  // default options for all requests in this session
+  headers: {
+    authorization: "Berear ...",
+  },
+});
+session.default_options // change them anytime!
 
-client
+session
   .req({
     url: "discord.com", // automatic add https:// in the url
   })
@@ -68,7 +84,7 @@ client
       /**
        * cookies saved from previous request (automatic save)
        */
-      client.cookies
+      session.cookies
     );
   });
 ```
@@ -76,9 +92,9 @@ client
 using proxy
 
 ```javascript
-const Request = require("krop");
+const krop = require("krop");
 
-Request({
+krop({
   url: "https://api.ipify.org/?format=json",
   /**
    * automatic parse proxy (supporting auth config)
@@ -128,34 +144,52 @@ Request({
 });
 ```
 
-### ESM/TS
+  </br>
+</details>
+
+<details>
+  <summary> <b> ESM/TS </b> </summary>
+  <br>
+
+simple get
+
+```javascript
+import krop from "krop";
+
+console.log(await krop("discord.com"));
+```
 
 cookie session
 
 ```javascript
-import { Session } from "krop";
+import krop from "krop";
+const { Session } = krop;
 
-const client = new Session();
-
-const response = await client.req({
-  url: "https://discord.com",
+const session = new Session({
+  // default options for all requests in this session
+  headers: {
+    authorization: "Berear ...",
+  },
 });
+session.default_options // change them anytime!
+
+const response = await session.req("discord.com");
 
 console.log(
   response,
   /**
    * cookies saved from previous request (automatic save)
    */
-  client.cookies
+  session.json()
 );
 ```
 
 using proxy
 
 ```javascript
-import Request from "krop";
+import krop from "krop";
 
-const response = await Request({
+const response = await krop({
   url: "https://api.ipify.org/?format=json",
   /**
    * automatic parse proxy (supporting auth config)
@@ -173,10 +207,10 @@ console.log(response.data);
 downloading any media
 
 ```javascript
-import Request from "krop";
+import krop from "krop";
 import { writeFileSync } from "fs";
 
-const response = await Request({
+const response = await krop({
   url: "https://pt.wikipedia.org/static/images/mobile/copyright/wikipedia.png",
 });
 
@@ -204,11 +238,16 @@ writeFileSync(
 console.log(response.headers["content-type"], response.data.length);
 ```
 
+  </br>
+</details>
+
 ## Request Config
+
+> For ease of use you can simply stop a `krop("www.google.com")` and it will **get** with the default options
 
 ```javascript
 {
-  // `url` is the server URL that will be used for the request
+  // `url` is the server URL that will be used for the request - Automatic add https://
   url: 'https://example.com/',
 
   // `method` is the request method to be used when making the request
@@ -241,11 +280,27 @@ console.log(response.headers["content-type"], response.data.length);
     password: 'bar'
   },
 
-   // support string, automatic parse
+   // support string, automatic parse - Automatic add https://
   proxy: 'https://foo:bar@127.0.0.1:80',
 
   // support http2
-  http2: false // defaults
+  http2: false // default
+}
+```
+
+## Response Config
+
+> Of course, it always sees these parameters as a response, but depending on the level of the HTTP protocol, more things may come up
+
+```javascript
+{
+  status: number,
+  headers: {
+    ...
+  },
+  data: {
+    ...
+  }
 }
 ```
 

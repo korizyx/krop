@@ -60,3 +60,17 @@ request.Session = class Session {
 };
 
 export default request;
+export class Session {
+  declare cookies: string;
+  constructor(default_options?: KropRequestOptions);
+
+  req(...args: [KropRequestOptions | string]): Promise<KropResponse>;
+
+  addCookie(
+    cookie: string | { name: string; value: string | number }
+  ): true | false;
+
+  removeCookie(cookie_name: string): true | false;
+
+  json(): { [key: string]: string };
+}

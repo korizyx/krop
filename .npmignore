@@ -6,7 +6,8 @@ yarn.lock
 update_version.js
 README.md
 rollup.config.js
+jest.config.js
 
 *.log
 *.lock
-test.js
+t.js
