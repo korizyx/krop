@@ -1,4 +1,4 @@
-// Krop v0.1.5 Copyright (c) 2023 Kori <korinamez@gmail.com> and contributors
+// Krop v0.1.6 Copyright (c) 2023 Kori <korinamez@gmail.com> and contributors
 'use strict';
 
 const http = require('http');
