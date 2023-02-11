@@ -1,39 +1,17 @@
-declare interface HermesResponse {
-  _readableState: ReadableState;
-  _maxListeners: number | undefined;
-  socket: null | any;
-  httpVersionMajor: number;
-  httpVersionMinor: number;
-  httpVersion: string;
-  complete: boolean;
-  rawHeaders: Array<string>;
-  rawTrailers: Array<string>;
-  aborted: boolean;
-  upgrade: boolean;
-  url: string;
-  method: null | string;
+declare interface KropResponse {
   status: number;
-  statusMessage: string;
-  client: TLSSocket;
-  _consuming: boolean;
-  _dumped: boolean;
-  req: ClientRequest;
-  headers: {
-    connection: string;
-    "Content-Type"?: string;
-    date?: string;
-  };
+  headers: { [key: string]: string };
   data: {} | Buffer;
 }
 
-declare interface HermesJsonProxy {
+declare interface KropJsonProxy {
   host: string;
   port: number;
   username?: string;
   password?: string;
 }
 
-declare interface HermesRequestOptions {
+declare interface KropRequestOptions {
   url: string;
   port?: number;
   method?:
@@ -57,26 +35,26 @@ declare interface HermesRequestOptions {
     | "LINK"
     | "unlink"
     | "UNLINK";
-  headers?: {};
+  headers?: { [key: string]: string };
   payload?: string | {};
-  proxy?: string | HermesJsonProxy;
+  proxy?: string | KropJsonProxy;
   timeout?: number;
   http2?: boolean;
 }
 
-declare function Request(
-  options: HermesRequestOptions
-): Promise<HermesResponse>;
+declare function request(options: KropRequestOptions): Promise<KropResponse>;
 
-export default Request;
+export default request;
 export class Session {
   declare cookies: string;
 
-  req(options: HermesRequestOptions): Promise<HermesResponse>;
+  req(options: KropRequestOptions): Promise<KropResponse>;
 
   addCookie(
     cookie: string | { name: string; value: string | number }
   ): true | false;
 
   removeCookie(cookie_name: string): true | false;
+
+  json(): { [key: string]: string };
 }
