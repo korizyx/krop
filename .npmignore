@@ -1,0 +1,12 @@
+node_modules/
+tests/
+
+package-lock.json
+yarn.lock
+update_version.js
+README.md
+rollup.config.js
+
+*.log
+*.lock
+test.js

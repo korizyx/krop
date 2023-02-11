@@ -1,0 +1,72 @@
+{
+  "name": "krop",
+  "description": "make a fast requests and simplify your code",
+  "version": "0.0.3",
+  "main": "./lib/Index.js",
+  "types": "./lib/Index.d.ts",
+  "license": "MIT",
+  "type": "module",
+  "exports": {
+    ".": {
+      "types": {
+        "default": "./lib/Index.d.ts"
+      },
+      "browser": {
+        "require": "./dist/browser/hermes.cjs",
+        "default": "./lib/Index.js"
+      },
+      "default": {
+        "require": "./dist/node/hermes.cjs",
+        "default": "./lib/Index.js"
+      }
+    },
+    "./package.json": "./package.json"
+  },
+  "scripts": {
+    "build": "rollup -c -m --bundleConfigAsCjs",
+    "update:version": "node update_version.js",
+    "deploy": "yarn build & yarn update:version",
+    "start": "node ."
+  },
+  "keywords": [
+    "request",
+    "powerful",
+    "stealth",
+    "simple",
+    "session",
+    "simple request",
+    "fast request",
+    "native request",
+    "proxy request",
+    "small package",
+    "https client request",
+    "automatic json parser",
+    "media support",
+    "cookie session"
+  ],
+  "author": "Kori <korinamez@gmail.com>",
+  "directories": {
+    "dist": "dist",
+    "lib": "lib",
+    "test": "tests"
+  },
+  "engines": {
+    "node": ">=16.15.0",
+    "npm": ">=8.5.5"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.20.2",
+    "@babel/preset-env": "^7.20.2",
+    "@rollup/plugin-babel": "^6.0.2",
+    "@rollup/plugin-commonjs": "^23.0.2",
+    "@rollup/plugin-json": "^5.0.1",
+    "@rollup/plugin-node-resolve": "^15.0.1",
+    "rollup": "^3.3.0",
+    "rollup-plugin-auto-external": "^2.0.0",
+    "rollup-plugin-bundle-size": "^1.0.3",
+    "rollup-plugin-terser": "^7.0.2"
+  },
+  "jsdelivr": "dist/hermes.min.js",
+  "unpkg": "dist/hermes.min.js",
+  "typings": "./lib/Index.d.ts"
+}
