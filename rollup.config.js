@@ -30,7 +30,7 @@ const buildConfig = ({es5, browser = true, minifiedVersion = true, ...config}) =
         ? ["min", ...extArr]
         : extArr
       ).join(".")}`,
-      exports: "mixed",
+      exports: "named",
     },
     plugins: [
       json(),

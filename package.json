@@ -1,7 +1,7 @@
 {
   "name": "krop",
   "description": "make a fast requests and simplify your code",
-  "version": "0.0.6",
+  "version": "0.0.8",
   "main": "./lib/Index.js",
   "types": "./lib/Index.d.ts",
   "license": "MIT",
@@ -23,7 +23,7 @@
     "./package.json": "./package.json"
   },
   "scripts": {
-    "build": "rollup -c -m --bundleConfigAsCjs",
+    "build": "rollup -c -m --bundleConfigAsCjs --intro \"exports = module.exports = request;\"",
     "update:version": "node update_version.js",
     "deploy": "yarn update:version",
     "start": "node .",

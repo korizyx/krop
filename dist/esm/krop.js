@@ -1,7 +1,10 @@
-// Hermes v0.0.6 Copyright (c) 2023 Kori <korinamez@gmail.com> and contributors
+// Hermes v0.0.8 Copyright (c) 2023 Kori <korinamez@gmail.com> and contributors
+exports = module.exports = request;
+
 import { request } from 'http';
 import { Agent, request as request$1 } from 'https';
 import { constants, connect } from 'http2';
+import assert from 'assert';
 
 const {
   HTTP2_HEADER_PATH,
@@ -272,12 +275,26 @@ function Request(options) {
 }
 
 class Session {
-  constructor() {
+  constructor(default_options = {}) {
+    this.default_options = default_options;
     this.cookies = "";
   }
 
-  async req(options) {
-    const parsed_options = this.addCookiesInOptions(options);
+  async req(...args) {
+    const url = args.find((v) => typeof v == "string") || "";
+    const options = args.find((v) => typeof v == "object") || {};
+
+    if (!options?.url) options.url = url;
+
+    const parsed_options = this.addCookiesInOptions({
+      ...this.default_options,
+      ...options,
+      headers: {
+        ...this.default_options?.headers,
+        ...options?.h,
+      },
+    });
+
     const response = await Request(parsed_options);
 
     try {
@@ -378,7 +395,13 @@ class Session {
   Request[method] = (options) => Request({ ...options, method });
 });
 
+Request.Session = Session;
 assert.equal(Request.Session, Session);
 
-export { Request as default };
+const Index = {
+  request: Request,
+  Session,
+};
+
+export { Index as default };
 //# sourceMappingURL=krop.js.map

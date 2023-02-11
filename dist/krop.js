@@ -1,9 +1,11 @@
-// Hermes v0.0.6 Copyright (c) 2023 Kori <korinamez@gmail.com> and contributors
+// Hermes v0.0.8 Copyright (c) 2023 Kori <korinamez@gmail.com> and contributors
 (function (global, factory) {
-  typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory(require('http'), require('https'), require('http2')) :
-  typeof define === 'function' && define.amd ? define(['http', 'https', 'http2'], factory) :
-  (global = typeof globalThis !== 'undefined' ? globalThis : global || self, global.krop = factory(global.http, global.https, global.http2));
-})(this, (function (http, https, http2) { 'use strict';
+  typeof exports === 'object' && typeof module !== 'undefined' ? factory(exports, require('http'), require('https'), require('http2'), require('assert')) :
+  typeof define === 'function' && define.amd ? define(['exports', 'http', 'https', 'http2', 'assert'], factory) :
+  (global = typeof globalThis !== 'undefined' ? globalThis : global || self, factory(global.krop = {}, global.http, global.https, global.http2, global.assert));
+})(this, (function (exports, http, https, http2, assert) { 'use strict';
+
+  exports = module.exports = request;
 
   function ownKeys(object, enumerableOnly) {
     var keys = Object.keys(object);
@@ -829,22 +831,44 @@
 
   var Session = /*#__PURE__*/function () {
     function Session() {
+      var default_options = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
       _classCallCheck(this, Session);
+      this.default_options = default_options;
       this.cookies = "";
     }
     _createClass(Session, [{
       key: "req",
       value: function () {
-        var _req = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee(options) {
-          var parsed_options, response;
+        var _req = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee() {
+          var _this$default_options;
+          var _len,
+            args,
+            _key,
+            url,
+            options,
+            parsed_options,
+            response,
+            _args = arguments;
           return _regeneratorRuntime().wrap(function _callee$(_context) {
             while (1) {
               switch (_context.prev = _context.next) {
                 case 0:
-                  parsed_options = this.addCookiesInOptions(options);
-                  _context.next = 3;
+                  for (_len = _args.length, args = new Array(_len), _key = 0; _key < _len; _key++) {
+                    args[_key] = _args[_key];
+                  }
+                  url = args.find(function (v) {
+                    return typeof v == "string";
+                  }) || "";
+                  options = args.find(function (v) {
+                    return _typeof(v) == "object";
+                  }) || {};
+                  if (!(options !== null && options !== void 0 && options.url)) options.url = url;
+                  parsed_options = this.addCookiesInOptions(_objectSpread2(_objectSpread2(_objectSpread2({}, this.default_options), options), {}, {
+                    headers: _objectSpread2(_objectSpread2({}, (_this$default_options = this.default_options) === null || _this$default_options === void 0 ? void 0 : _this$default_options.headers), options === null || options === void 0 ? void 0 : options.h)
+                  }));
+                  _context.next = 7;
                   return Request(parsed_options);
-                case 3:
+                case 7:
                   response = _context.sent;
                   try {
                     if (response.headers["set-cookie"]) {
@@ -856,14 +880,14 @@
                     }
                   } catch (error) {}
                   return _context.abrupt("return", response);
-                case 6:
+                case 10:
                 case "end":
                   return _context.stop();
               }
             }
           }, _callee, this);
         }));
-        function req(_x) {
+        function req() {
           return _req.apply(this, arguments);
         }
         return req;
@@ -949,9 +973,16 @@
       }));
     };
   });
+  Request.Session = Session;
   assert.equal(Request.Session, Session);
+  var Index = {
+    request: Request,
+    Session: Session
+  };
 
-  return Request;
+  exports.default = Index;
+
+  Object.defineProperty(exports, '__esModule', { value: true });
 
 }));
 //# sourceMappingURL=krop.js.map
