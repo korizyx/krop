@@ -60,7 +60,7 @@ const client = new Session();
 
 client
   .req({
-    url: "https://discord.com",
+    url: "discord.com", // automatic add https:// in the url
   })
   .then((response) => {
     console.log(

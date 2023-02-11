@@ -1,15 +1,16 @@
-import { Session } from "../lib/Index.js";
+import krop from "../lib/Index.js";
+const { Session } = krop;
 
 test("session collect cookies", async () => {
-  const client = new Session({});
+  const session = new Session({});
 
-  const { status } = await client.req("https://discord.com");
+  await session.req("https://discord.com");
 
-  expect(client.cookies.length > 0).toBe(true);
+  expect(session.cookies.length > 0).toBe(true);
 });
 
 test("default headers", async () => {
-  const client = new Session({
+  const session = new Session({
     headers: {
       "Test-Krop": "done",
     },
@@ -17,7 +18,7 @@ test("default headers", async () => {
 
   const {
     data: { headers },
-  } = await client.req("https://httpbin.org/headers", {
+  } = await session.req("https://httpbin.org/headers", {
     headers: {
       "Test-Krop-2": "done",
     },

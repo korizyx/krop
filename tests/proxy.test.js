@@ -1,7 +1,7 @@
-import Request from "../lib/Index.js";
+import krop from "../lib/Index.js";
 
 test("proxy work", async () => {
-  const { data } = await Request({
+  const { data } = await krop({
     url: "https://api.ipify.org?format=json",
     proxy: "31.186.239.245:8080",
     timeout: 10000,

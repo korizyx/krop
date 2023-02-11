@@ -1,11 +1,9 @@
-// Hermes v0.0.8 Copyright (c) 2023 Kori <korinamez@gmail.com> and contributors
+// Hermes v0.1.1 Copyright (c) 2023 Kori <korinamez@gmail.com> and contributors
 (function (global, factory) {
-  typeof exports === 'object' && typeof module !== 'undefined' ? factory(exports, require('http'), require('https'), require('http2'), require('assert')) :
-  typeof define === 'function' && define.amd ? define(['exports', 'http', 'https', 'http2', 'assert'], factory) :
-  (global = typeof globalThis !== 'undefined' ? globalThis : global || self, factory(global.krop = {}, global.http, global.https, global.http2, global.assert));
-})(this, (function (exports, http, https, http2, assert) { 'use strict';
-
-  exports = module.exports = request;
+  typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory(require('http'), require('https'), require('http2'), require('assert')) :
+  typeof define === 'function' && define.amd ? define(['http', 'https', 'http2', 'assert'], factory) :
+  (global = typeof globalThis !== 'undefined' ? globalThis : global || self, global.krop = factory(global.http, global.https, global.http2, global.assert));
+})(this, (function (http, https, http2, assert) { 'use strict';
 
   function ownKeys(object, enumerableOnly) {
     var keys = Object.keys(object);
@@ -718,6 +716,7 @@
                     response_data.push(chunk);
                   });
                   res.on("end", function () {
+                    res.status = res.statusCode;
                     res.data = RequestManager$1.parseResponseData(response_data, res.headers);
                     resolve(res);
                   });
@@ -758,6 +757,7 @@
                     response_data.push(chunk);
                   });
                   res.on("end", function () {
+                    res.status = res.statusCode;
                     res.data = RequestManager$1.parseResponseData(response_data, res.headers);
                     resolve(res);
                   });
@@ -825,7 +825,18 @@
     }());
   }
 
-  function Request(options) {
+  function Request() {
+    for (var _len = arguments.length, args = new Array(_len), _key = 0; _key < _len; _key++) {
+      args[_key] = arguments[_key];
+    }
+    var url = args.find(function (v) {
+      return typeof v == "string";
+    }) || "";
+    var options = args.find(function (v) {
+      return _typeof(v) == "object";
+    }) || {};
+    if (!(options !== null && options !== void 0 && options.url)) options.url = url;
+    options.url.includes("http:") || options.url.includes("https:") ? null : options.url = "https://".concat(options.url);
     return options.http2 ? HTTP2(options) : options.url.includes("http:") ? HTTP(options) : HTTPS(options);
   }
 
@@ -864,7 +875,7 @@
                   }) || {};
                   if (!(options !== null && options !== void 0 && options.url)) options.url = url;
                   parsed_options = this.addCookiesInOptions(_objectSpread2(_objectSpread2(_objectSpread2({}, this.default_options), options), {}, {
-                    headers: _objectSpread2(_objectSpread2({}, (_this$default_options = this.default_options) === null || _this$default_options === void 0 ? void 0 : _this$default_options.headers), options === null || options === void 0 ? void 0 : options.h)
+                    headers: _objectSpread2(_objectSpread2({}, (_this$default_options = this.default_options) === null || _this$default_options === void 0 ? void 0 : _this$default_options.headers), options === null || options === void 0 ? void 0 : options.headers)
                   }));
                   _context.next = 7;
                   return Request(parsed_options);
@@ -975,14 +986,9 @@
   });
   Request.Session = Session;
   assert.equal(Request.Session, Session);
-  var Index = {
-    request: Request,
-    Session: Session
-  };
+  var request = Request;
 
-  exports.default = Index;
-
-  Object.defineProperty(exports, '__esModule', { value: true });
+  return request;
 
 }));
 //# sourceMappingURL=krop.js.map

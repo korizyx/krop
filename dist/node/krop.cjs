@@ -1,7 +1,5 @@
-// Hermes v0.0.8 Copyright (c) 2023 Kori <korinamez@gmail.com> and contributors
+// Hermes v0.1.1 Copyright (c) 2023 Kori <korinamez@gmail.com> and contributors
 'use strict';
-
-exports = module.exports = request;
 
 const http = require('http');
 const https = require('https');
@@ -195,6 +193,7 @@ function HTTP(options = {}) {
       });
 
       res.on("end", () => {
+        res.status = res.statusCode;
         res.data = RequestManager$1.parseResponseData(response_data, res.headers);
 
         resolve(res);
@@ -221,6 +220,7 @@ function HTTPS(options) {
       });
 
       res.on("end", () => {
+        res.status = res.statusCode;
         res.data = RequestManager$1.parseResponseData(response_data, res.headers);
 
         resolve(res);
@@ -268,7 +268,16 @@ function HTTP2(options) {
   });
 }
 
-function Request(options) {
+function Request(...args) {
+  const url = args.find((v) => typeof v == "string") || "";
+  const options = args.find((v) => typeof v == "object") || {};
+
+  if (!options?.url) options.url = url;
+
+  options.url.includes("http:") || options.url.includes("https:")
+    ? null
+    : (options.url = `https://${options.url}`);
+
   return options.http2
     ? HTTP2(options)
     : options.url.includes("http:")
@@ -293,7 +302,7 @@ class Session {
       ...options,
       headers: {
         ...this.default_options?.headers,
-        ...options?.h,
+        ...options?.headers,
       },
     });
 
@@ -400,10 +409,7 @@ class Session {
 Request.Session = Session;
 assert.equal(Request.Session, Session);
 
-const Index = {
-  request: Request,
-  Session,
-};
+const request = Request;
 
-module.exports = Index;
+module.exports = request;
 //# sourceMappingURL=krop.cjs.map

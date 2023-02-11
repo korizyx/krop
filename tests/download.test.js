@@ -1,7 +1,7 @@
-import Request from "../lib/Index.js";
+import krop from "../lib/Index.js";
 
 test("covert image to buffer", async () => {
-  const { data } = await Request({
+  const { data } = await krop({
     url: "https://pt.wikipedia.org/static/images/mobile/copyright/wikipedia.png",
   });
 
