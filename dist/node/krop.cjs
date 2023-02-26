@@ -1,4 +1,4 @@
-// Krop v0.1.6 Copyright (c) 2023 Kori <korinamez@gmail.com> and contributors
+// Krop v0.1.7 Copyright (c) 2023 Kori <korinamez@gmail.com> and contributors
 'use strict';
 
 const http = require('http');
@@ -124,10 +124,7 @@ class RequestManager {
           [HTTP2_HEADER_SCHEME]: parsed_url.protocol.split(":")[0],
           [HTTP2_HEADER_METHOD]:
             http2.constants[`HTTP2_METHOD_${options.method?.toUpperCase()}`],
-          "Content-Type":
-            options?.headers && options?.headers["Content-Type"]
-              ? options?.headers["Content-Type"]
-              : "text/plain",
+          "Content-Type": "text/plain",
           "Content-Length": buffer.length,
           Accept: "*/*, image/*",
           ...options?.headers,
@@ -240,7 +237,10 @@ const { HTTP2_HEADER_STATUS } = http2.constants;
 function HTTP2(options) {
   return new Promise(async (resolve) => {
     const parsed_options = await RequestManager$1.parseOptions(options);
-    const clientSession = http2.connect(new URL(parsed_options.url), parsed_options.client);
+    const clientSession = http2.connect(
+      new URL(parsed_options.url),
+      parsed_options.client
+    );
     const req = clientSession.request(parsed_options.request);
 
     req.on("response", (headers) => {

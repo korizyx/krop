@@ -1,4 +1,4 @@
-// Krop v0.1.6 Copyright (c) 2023 Kori <korinamez@gmail.com> and contributors
+// Krop v0.1.7 Copyright (c) 2023 Kori <korinamez@gmail.com> and contributors
 (function (global, factory) {
   typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory(require('http'), require('https'), require('http2'), require('assert')) :
   typeof define === 'function' && define.amd ? define(['http', 'https', 'http2', 'assert'], factory) :
@@ -631,7 +631,7 @@
                       ALPNProtocols: ["h2", "http/1.1"],
                       socket: options.socket
                     },
-                    request: _objectSpread2((_objectSpread2$1 = {}, _defineProperty(_objectSpread2$1, HTTP2_HEADER_AUTHORITY, parsed_url.host), _defineProperty(_objectSpread2$1, HTTP2_HEADER_PATH, parsed_url.pathname + parsed_url.search || "/"), _defineProperty(_objectSpread2$1, HTTP2_HEADER_SCHEME, parsed_url.protocol.split(":")[0]), _defineProperty(_objectSpread2$1, HTTP2_HEADER_METHOD, http2.constants["HTTP2_METHOD_".concat((_options$method = options.method) === null || _options$method === void 0 ? void 0 : _options$method.toUpperCase())]), _defineProperty(_objectSpread2$1, "Content-Type", options !== null && options !== void 0 && options.headers && options !== null && options !== void 0 && options.headers["Content-Type"] ? options === null || options === void 0 ? void 0 : options.headers["Content-Type"] : "text/plain"), _defineProperty(_objectSpread2$1, "Content-Length", buffer.length), _defineProperty(_objectSpread2$1, "Accept", "*/*, image/*"), _objectSpread2$1), options === null || options === void 0 ? void 0 : options.headers)
+                    request: _objectSpread2((_objectSpread2$1 = {}, _defineProperty(_objectSpread2$1, HTTP2_HEADER_AUTHORITY, parsed_url.host), _defineProperty(_objectSpread2$1, HTTP2_HEADER_PATH, parsed_url.pathname + parsed_url.search || "/"), _defineProperty(_objectSpread2$1, HTTP2_HEADER_SCHEME, parsed_url.protocol.split(":")[0]), _defineProperty(_objectSpread2$1, HTTP2_HEADER_METHOD, http2.constants["HTTP2_METHOD_".concat((_options$method = options.method) === null || _options$method === void 0 ? void 0 : _options$method.toUpperCase())]), _defineProperty(_objectSpread2$1, "Content-Type", "text/plain"), _defineProperty(_objectSpread2$1, "Content-Length", buffer.length), _defineProperty(_objectSpread2$1, "Accept", "*/*, image/*"), _objectSpread2$1), options === null || options === void 0 ? void 0 : options.headers)
                   });
                 case 11:
                   if (!options.proxy) {
