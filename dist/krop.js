@@ -1,4 +1,4 @@
-// Krop v0.1.9 Copyright (c) 2023 Kori <korinamez@gmail.com> and contributors
+// Krop v0.2.0 Copyright (c) 2023 Kori <korinamez@gmail.com> and contributors
 (function (global, factory) {
   typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory(require('http'), require('https'), require('http2'), require('assert')) :
   typeof define === 'function' && define.amd ? define(['http', 'https', 'http2', 'assert'], factory) :
@@ -782,17 +782,17 @@
   var HTTP2_HEADER_STATUS = http2.constants.HTTP2_HEADER_STATUS;
   function HTTP2(options) {
     return new Promise( /*#__PURE__*/function () {
-      var _ref = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee(resolve) {
+      var _ref = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee2(resolve) {
         var _parsed_options$paylo;
         var parsed_options, clientSession, req;
-        return _regeneratorRuntime().wrap(function _callee$(_context) {
+        return _regeneratorRuntime().wrap(function _callee2$(_context2) {
           while (1) {
-            switch (_context.prev = _context.next) {
+            switch (_context2.prev = _context2.next) {
               case 0:
-                _context.next = 2;
+                _context2.next = 2;
                 return RequestManager$1.parseOptions(options);
               case 2:
-                parsed_options = _context.sent;
+                parsed_options = _context2.sent;
                 clientSession = http2.connect(new URL(parsed_options.url), parsed_options.client);
                 req = clientSession.request(parsed_options.request);
                 req.on("response", function (headers) {
@@ -801,24 +801,34 @@
                     response_data.push(chunk);
                   });
                   req.on("error", console.log);
-                  req.on("end", function () {
-                    req.close();
-                    clientSession.close();
-                    resolve({
-                      status: headers[HTTP2_HEADER_STATUS],
-                      headers: headers,
-                      data: RequestManager$1.parseResponseData(response_data, headers)
-                    });
-                  });
+                  req.on("end", /*#__PURE__*/_asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee() {
+                    return _regeneratorRuntime().wrap(function _callee$(_context) {
+                      while (1) {
+                        switch (_context.prev = _context.next) {
+                          case 0:
+                            req.close();
+                            clientSession.destroy();
+                            resolve({
+                              status: headers[HTTP2_HEADER_STATUS],
+                              headers: headers,
+                              data: RequestManager$1.parseResponseData(response_data, headers)
+                            });
+                          case 3:
+                          case "end":
+                            return _context.stop();
+                        }
+                      }
+                    }, _callee);
+                  })));
                 });
                 if (((_parsed_options$paylo = parsed_options.payload) === null || _parsed_options$paylo === void 0 ? void 0 : _parsed_options$paylo.length) > 0) req.write(parsed_options.payload);
                 req.end();
               case 8:
               case "end":
-                return _context.stop();
+                return _context2.stop();
             }
           }
-        }, _callee);
+        }, _callee2);
       }));
       return function (_x) {
         return _ref.apply(this, arguments);

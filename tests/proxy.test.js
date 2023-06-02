@@ -3,7 +3,8 @@ import krop from "../lib/Index.js";
 test("proxy work", async () => {
   const { data } = await krop({
     url: "https://api.ipify.org?format=json",
-    proxy: "31.186.239.245:8080",
+    proxy:
+      "R5Qm9jF7Tf-res-google.us-sid-11986937:o8Ssn473YgvxNO9Z@gw-eu.rainproxy.io:5959",
     timeout: 10000,
   });
 
