@@ -1,4 +1,4 @@
-// Krop v0.1.7 Copyright (c) 2023 Kori <korinamez@gmail.com> and contributors
+// Krop v0.1.8 Copyright (c) 2023 Kori <korinamez@gmail.com> and contributors
 import { request as request$1 } from 'http';
 import { Agent, request as request$2 } from 'https';
 import { constants, connect } from 'http2';
@@ -247,6 +247,8 @@ function HTTP2(options) {
       req.on("data", (chunk) => {
         response_data.push(chunk);
       });
+
+      req.on("error", console.log);
 
       req.on("end", () => {
         req.close();

@@ -23,7 +23,7 @@ test("default headers", async () => {
       "Test-Krop-2": "done",
     },
   });
-
+  
   expect(
     headers["Test-Krop"] == "done" && headers["Test-Krop-2"] == "done"
   ).toBe(true);

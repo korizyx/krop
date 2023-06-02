@@ -1,4 +1,4 @@
-// Krop v0.1.7 Copyright (c) 2023 Kori <korinamez@gmail.com> and contributors
+// Krop v0.1.8 Copyright (c) 2023 Kori <korinamez@gmail.com> and contributors
 (function (global, factory) {
   typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory(require('http'), require('https'), require('http2'), require('assert')) :
   typeof define === 'function' && define.amd ? define(['http', 'https', 'http2', 'assert'], factory) :
@@ -800,6 +800,7 @@
                   req.on("data", function (chunk) {
                     response_data.push(chunk);
                   });
+                  req.on("error", console.log);
                   req.on("end", function () {
                     req.close();
                     clientSession.close();
