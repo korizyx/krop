@@ -1,4 +1,4 @@
-// Krop v0.2.3 Copyright (c) 2023 Kori <korinamez@gmail.com> and contributors
+// Krop v0.2.4 Copyright (c) 2023 Kori <korinamez@gmail.com> and contributors
 'use strict';
 
 const http = require('http');
@@ -333,7 +333,7 @@ class Session {
           var str = "";
 
           for (const key of Object.keys(interweaving)) {
-            str += `${key}: ${interweaving[key]}; `;
+            str += `${key}=${interweaving[key]}; `;
           }
 
           this.cookies = str.slice(0, -2);

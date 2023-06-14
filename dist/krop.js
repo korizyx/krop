@@ -1,4 +1,4 @@
-// Krop v0.2.3 Copyright (c) 2023 Kori <korinamez@gmail.com> and contributors
+// Krop v0.2.4 Copyright (c) 2023 Kori <korinamez@gmail.com> and contributors
 (function (global, factory) {
   typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory(require('http'), require('https'), require('http2'), require('assert')) :
   typeof define === 'function' && define.amd ? define(['http', 'https', 'http2', 'assert'], factory) :
@@ -914,7 +914,7 @@
                         str = "";
                         for (_i = 0, _Object$keys = Object.keys(interweaving); _i < _Object$keys.length; _i++) {
                           key = _Object$keys[_i];
-                          str += "".concat(key, ": ").concat(interweaving[key], "; ");
+                          str += "".concat(key, "=").concat(interweaving[key], "; ");
                         }
                         this.cookies = str.slice(0, -2);
                       } else {
