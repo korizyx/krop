@@ -1,4 +1,4 @@
-// Krop v0.2.1 Copyright (c) 2023 Kori <korinamez@gmail.com> and contributors
+// Krop v0.2.2 Copyright (c) 2023 Kori <korinamez@gmail.com> and contributors
 import { request as request$1 } from 'http';
 import { Agent, request as request$2 } from 'https';
 import { constants, connect } from 'http2';
@@ -315,16 +315,31 @@ class Session {
 
     try {
       if (response.headers["set-cookie"]) {
-        if (this.cookies)
-          this.cookies +=
-            "; " +
+        if (this.cookies) {
+          const session_cookies = this.json();
+          const response_cookies = this.json(
             response.headers["set-cookie"]
               .map((c) => c.split(";")[0])
-              .join("; ");
-        else
+              .join("; ")
+          );
+
+          const interweaving = {
+            ...session_cookies,
+            ...response_cookies,
+          };
+
+          var str = "";
+
+          for (const key of Object.keys(interweaving)) {
+            str += `${key}: ${interweaving[key]}; `;
+          }
+
+          this.cookies = str.slice(0, -2);
+        } else {
           this.cookies = response.headers["set-cookie"]
             .map((c) => c.split(";")[0])
             .join("; ");
+        }
       }
     } catch (error) {}
 
@@ -382,10 +397,10 @@ class Session {
     return options;
   }
 
-  json() {
+  json(str) {
     const object = {};
 
-    for (const cookie of this.cookies.split("; ")) {
+    for (const cookie of (str || this.cookies).split("; ")) {
       const [name, ...value] = cookie.split("=");
 
       if (name) {

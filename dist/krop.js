@@ -1,4 +1,4 @@
-// Krop v0.2.1 Copyright (c) 2023 Kori <korinamez@gmail.com> and contributors
+// Krop v0.2.2 Copyright (c) 2023 Kori <korinamez@gmail.com> and contributors
 (function (global, factory) {
   typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory(require('http'), require('https'), require('http2'), require('assert')) :
   typeof define === 'function' && define.amd ? define(['http', 'https', 'http2', 'assert'], factory) :
@@ -874,6 +874,13 @@
             options,
             parsed_options,
             response,
+            session_cookies,
+            response_cookies,
+            interweaving,
+            str,
+            _i,
+            _Object$keys,
+            key,
             _args = arguments;
           return _regeneratorRuntime().wrap(function _callee$(_context) {
             while (1) {
@@ -898,11 +905,23 @@
                   response = _context.sent;
                   try {
                     if (response.headers["set-cookie"]) {
-                      if (this.cookies) this.cookies += "; " + response.headers["set-cookie"].map(function (c) {
-                        return c.split(";")[0];
-                      }).join("; ");else this.cookies = response.headers["set-cookie"].map(function (c) {
-                        return c.split(";")[0];
-                      }).join("; ");
+                      if (this.cookies) {
+                        session_cookies = this.json();
+                        response_cookies = this.json(response.headers["set-cookie"].map(function (c) {
+                          return c.split(";")[0];
+                        }).join("; "));
+                        interweaving = _objectSpread2(_objectSpread2({}, session_cookies), response_cookies);
+                        str = "";
+                        for (_i = 0, _Object$keys = Object.keys(interweaving); _i < _Object$keys.length; _i++) {
+                          key = _Object$keys[_i];
+                          str += "".concat(key, ": ").concat(interweaving[key], "; ");
+                        }
+                        this.cookies = str.slice(0, -2);
+                      } else {
+                        this.cookies = response.headers["set-cookie"].map(function (c) {
+                          return c.split(";")[0];
+                        }).join("; ");
+                      }
                     }
                   } catch (error) {}
                   return _context.abrupt("return", response);
@@ -966,9 +985,9 @@
       }
     }, {
       key: "json",
-      value: function json() {
+      value: function json(str) {
         var object = {};
-        var _iterator = _createForOfIteratorHelper(this.cookies.split("; ")),
+        var _iterator = _createForOfIteratorHelper((str || this.cookies).split("; ")),
           _step;
         try {
           for (_iterator.s(); !(_step = _iterator.n()).done;) {
