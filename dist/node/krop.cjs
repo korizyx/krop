@@ -1,4 +1,4 @@
-// Krop v0.2.2 Copyright (c) 2023 Kori <korinamez@gmail.com> and contributors
+// Krop v0.2.3 Copyright (c) 2023 Kori <korinamez@gmail.com> and contributors
 'use strict';
 
 const http = require('http');
@@ -243,7 +243,7 @@ function HTTP2(options) {
     );
 
     clientSession.settings({
-      maxConcurrentStreams: Infinity,
+      maxConcurrentStreams: 4294967295,
     });
 
     const req = clientSession.request(parsed_options.request);

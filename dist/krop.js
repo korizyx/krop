@@ -1,4 +1,4 @@
-// Krop v0.2.2 Copyright (c) 2023 Kori <korinamez@gmail.com> and contributors
+// Krop v0.2.3 Copyright (c) 2023 Kori <korinamez@gmail.com> and contributors
 (function (global, factory) {
   typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory(require('http'), require('https'), require('http2'), require('assert')) :
   typeof define === 'function' && define.amd ? define(['http', 'https', 'http2', 'assert'], factory) :
@@ -795,7 +795,7 @@
                 parsed_options = _context2.sent;
                 clientSession = http2.connect(new URL(parsed_options.url), parsed_options.client);
                 clientSession.settings({
-                  maxConcurrentStreams: Infinity
+                  maxConcurrentStreams: 4294967295
                 });
                 req = clientSession.request(parsed_options.request);
                 req.on("response", function (headers) {
