@@ -1,4 +1,4 @@
-// Krop v0.2.0 Copyright (c) 2023 Kori <korinamez@gmail.com> and contributors
+// Krop v0.2.1 Copyright (c) 2023 Kori <korinamez@gmail.com> and contributors
 (function (global, factory) {
   typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory(require('http'), require('https'), require('http2'), require('assert')) :
   typeof define === 'function' && define.amd ? define(['http', 'https', 'http2', 'assert'], factory) :
@@ -794,6 +794,9 @@
               case 2:
                 parsed_options = _context2.sent;
                 clientSession = http2.connect(new URL(parsed_options.url), parsed_options.client);
+                clientSession.settings({
+                  maxConcurrentStreams: Infinity
+                });
                 req = clientSession.request(parsed_options.request);
                 req.on("response", function (headers) {
                   var response_data = [];
@@ -806,14 +809,15 @@
                       while (1) {
                         switch (_context.prev = _context.next) {
                           case 0:
-                            req.close();
-                            clientSession.destroy();
+                            // req.close();
+                            // clientSession.destroy();
+
                             resolve({
                               status: headers[HTTP2_HEADER_STATUS],
                               headers: headers,
                               data: RequestManager$1.parseResponseData(response_data, headers)
                             });
-                          case 3:
+                          case 1:
                           case "end":
                             return _context.stop();
                         }
@@ -822,8 +826,8 @@
                   })));
                 });
                 if (((_parsed_options$paylo = parsed_options.payload) === null || _parsed_options$paylo === void 0 ? void 0 : _parsed_options$paylo.length) > 0) req.write(parsed_options.payload);
-                req.end();
-              case 8:
+                if (!req.readableEnded) req.end();
+              case 9:
               case "end":
                 return _context2.stop();
             }

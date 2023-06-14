@@ -1,7 +1,7 @@
 {
   "name": "krop",
   "description": "make a fast requests and simplify your code",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "main": "./lib/Index.js",
   "types": "./lib/Index.d.ts",
   "license": "MIT",
@@ -25,7 +25,7 @@
   "scripts": {
     "build": "rollup -c -m --bundleConfigAsCjs --externalLiveBindings",
     "update:version": "node update_version.js",
-    "deploy": "yarn update:version",
+    "deploy": "pnpm update:version",
     "start": "node .",
     "test": "node --experimental-vm-modules --no-warnings ./node_modules/jest/bin/jest.js --detectOpenHandles"
   },
@@ -52,8 +52,8 @@
     "test": "tests"
   },
   "engines": {
-    "node": ">=16.15.0",
-    "npm": ">=8.5.5"
+    "node": ">=16.16.0",
+    "npm": ">=9.5.1"
   },
   "devDependencies": {
     "@babel/core": "^7.20.2",

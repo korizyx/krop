@@ -1,4 +1,4 @@
-// Krop v0.2.0 Copyright (c) 2023 Kori <korinamez@gmail.com> and contributors
+// Krop v0.2.1 Copyright (c) 2023 Kori <korinamez@gmail.com> and contributors
 'use strict';
 
 const http = require('http');
@@ -241,6 +241,11 @@ function HTTP2(options) {
       new URL(parsed_options.url),
       parsed_options.client
     );
+
+    clientSession.settings({
+      maxConcurrentStreams: Infinity,
+    });
+
     const req = clientSession.request(parsed_options.request);
 
     req.on("response", (headers) => {
@@ -253,8 +258,8 @@ function HTTP2(options) {
       req.on("error", console.log);
 
       req.on("end", async () => {
-        req.close();
-        clientSession.destroy();
+        // req.close();
+        // clientSession.destroy();
 
         resolve({
           status: headers[HTTP2_HEADER_STATUS],
@@ -266,7 +271,7 @@ function HTTP2(options) {
 
     if (parsed_options.payload?.length > 0) req.write(parsed_options.payload);
 
-    req.end();
+    if (!req.readableEnded) req.end();
   });
 }
 
