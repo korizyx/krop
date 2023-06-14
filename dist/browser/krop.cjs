@@ -1,4 +1,4 @@
-// Krop v0.2.5 Copyright (c) 2023 Kori <korinamez@gmail.com> and contributors
+// Krop v0.2.6 Copyright (c) 2023 Kori <korinamez@gmail.com> and contributors
 'use strict';
 
 var http = require('http');
@@ -258,8 +258,8 @@ function HTTP2(options) {
       req.on("error", console.log);
 
       req.on("end", async () => {
-        // req.close();
-        // clientSession.destroy();
+        req.close();
+        clientSession.destroy();
 
         resolve({
           status: headers[HTTP2_HEADER_STATUS],
