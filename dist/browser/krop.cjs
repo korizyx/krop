@@ -1,4 +1,4 @@
-// Krop v0.2.4 Copyright (c) 2023 Kori <korinamez@gmail.com> and contributors
+// Krop v0.2.5 Copyright (c) 2023 Kori <korinamez@gmail.com> and contributors
 'use strict';
 
 var http = require('http');
@@ -409,6 +409,7 @@ class Session {
         object[name] = value.join("=");
       }
     }
+    
     return object;
   }
 }

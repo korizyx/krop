@@ -1,4 +1,4 @@
-// Krop v0.2.4 Copyright (c) 2023 Kori <korinamez@gmail.com> and contributors
+// Krop v0.2.5 Copyright (c) 2023 Kori <korinamez@gmail.com> and contributors
 import { request as request$1 } from 'http';
 import { Agent, request as request$2 } from 'https';
 import { constants, connect } from 'http2';
@@ -407,6 +407,7 @@ class Session {
         object[name] = value.join("=");
       }
     }
+    
     return object;
   }
 }
