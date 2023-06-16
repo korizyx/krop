@@ -1,10 +1,37 @@
-// Krop v0.2.6 Copyright (c) 2023 Kori <korinamez@gmail.com> and contributors
+// Krop v0.2.7 Copyright (c) 2023 Kori <korinamez@gmail.com> and contributors
 (function (global, factory) {
   typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory(require('http'), require('https'), require('http2'), require('assert')) :
   typeof define === 'function' && define.amd ? define(['http', 'https', 'http2', 'assert'], factory) :
   (global = typeof globalThis !== 'undefined' ? globalThis : global || self, global.krop = factory(global.http, global.https, global.http2, global.assert));
 })(this, (function (http, https, http2, assert) { 'use strict';
 
+  function _iterableToArrayLimit(arr, i) {
+    var _i = null == arr ? null : "undefined" != typeof Symbol && arr[Symbol.iterator] || arr["@@iterator"];
+    if (null != _i) {
+      var _s,
+        _e,
+        _x,
+        _r,
+        _arr = [],
+        _n = !0,
+        _d = !1;
+      try {
+        if (_x = (_i = _i.call(arr)).next, 0 === i) {
+          if (Object(_i) !== _i) return;
+          _n = !1;
+        } else for (; !(_n = (_s = _x.call(_i)).done) && (_arr.push(_s.value), _arr.length !== i); _n = !0);
+      } catch (err) {
+        _d = !0, _e = err;
+      } finally {
+        try {
+          if (!_n && null != _i.return && (_r = _i.return(), Object(_r) !== _r)) return;
+        } finally {
+          if (_d) throw _e;
+        }
+      }
+      return _arr;
+    }
+  }
   function ownKeys(object, enumerableOnly) {
     var keys = Object.keys(object);
     if (Object.getOwnPropertySymbols) {
@@ -161,14 +188,9 @@
       };
     }
     function maybeInvokeDelegate(delegate, context) {
-      var method = delegate.iterator[context.method];
-      if (undefined === method) {
-        if (context.delegate = null, "throw" === context.method) {
-          if (delegate.iterator.return && (context.method = "return", context.arg = undefined, maybeInvokeDelegate(delegate, context), "throw" === context.method)) return ContinueSentinel;
-          context.method = "throw", context.arg = new TypeError("The iterator does not provide a 'throw' method");
-        }
-        return ContinueSentinel;
-      }
+      var methodName = context.method,
+        method = delegate.iterator[methodName];
+      if (undefined === method) return context.delegate = null, "throw" === methodName && delegate.iterator.return && (context.method = "return", context.arg = undefined, maybeInvokeDelegate(delegate, context), "throw" === context.method) || "return" !== methodName && (context.method = "throw", context.arg = new TypeError("The iterator does not provide a '" + methodName + "' method")), ContinueSentinel;
       var record = tryCatch(method, delegate.iterator, context.arg);
       if ("throw" === record.type) return context.method = "throw", context.arg = record.arg, context.delegate = null, ContinueSentinel;
       var info = record.arg;
@@ -382,7 +404,7 @@
       descriptor.enumerable = descriptor.enumerable || false;
       descriptor.configurable = true;
       if ("value" in descriptor) descriptor.writable = true;
-      Object.defineProperty(target, descriptor.key, descriptor);
+      Object.defineProperty(target, _toPropertyKey(descriptor.key), descriptor);
     }
   }
   function _createClass(Constructor, protoProps, staticProps) {
@@ -394,6 +416,7 @@
     return Constructor;
   }
   function _defineProperty(obj, key, value) {
+    key = _toPropertyKey(key);
     if (key in obj) {
       Object.defineProperty(obj, key, {
         value: value,
@@ -417,30 +440,6 @@
   }
   function _iterableToArray(iter) {
     if (typeof Symbol !== "undefined" && iter[Symbol.iterator] != null || iter["@@iterator"] != null) return Array.from(iter);
-  }
-  function _iterableToArrayLimit(arr, i) {
-    var _i = arr == null ? null : typeof Symbol !== "undefined" && arr[Symbol.iterator] || arr["@@iterator"];
-    if (_i == null) return;
-    var _arr = [];
-    var _n = true;
-    var _d = false;
-    var _s, _e;
-    try {
-      for (_i = _i.call(arr); !(_n = (_s = _i.next()).done); _n = true) {
-        _arr.push(_s.value);
-        if (i && _arr.length === i) break;
-      }
-    } catch (err) {
-      _d = true;
-      _e = err;
-    } finally {
-      try {
-        if (!_n && _i["return"] != null) _i["return"]();
-      } finally {
-        if (_d) throw _e;
-      }
-    }
-    return _arr;
   }
   function _unsupportedIterableToArray(o, minLen) {
     if (!o) return;
@@ -508,6 +507,20 @@
         }
       }
     };
+  }
+  function _toPrimitive(input, hint) {
+    if (typeof input !== "object" || input === null) return input;
+    var prim = input[Symbol.toPrimitive];
+    if (prim !== undefined) {
+      var res = prim.call(input, hint || "default");
+      if (typeof res !== "object") return res;
+      throw new TypeError("@@toPrimitive must return a primitive value.");
+    }
+    return (hint === "string" ? String : Number)(input);
+  }
+  function _toPropertyKey(arg) {
+    var key = _toPrimitive(arg, "string");
+    return typeof key === "symbol" ? key : String(key);
   }
 
   var HTTP2_HEADER_PATH = http2.constants.HTTP2_HEADER_PATH,
@@ -604,81 +617,79 @@
             _options$method2,
             _args = arguments;
           return _regeneratorRuntime().wrap(function _callee$(_context) {
-            while (1) {
-              switch (_context.prev = _context.next) {
-                case 0:
-                  options = _args.length > 0 && _args[0] !== undefined ? _args[0] : {};
-                  parsed_url = new URL(options.url);
-                  buffer = Buffer.from(_typeof(options.payload) == "object" ? JSON.stringify(options.payload) : typeof options.payload != "string" && options.payload ? String(options.payload) : options.payload || "");
-                  if (!options.http2) {
-                    _context.next = 11;
-                    break;
-                  }
-                  if (!options.proxy) {
-                    _context.next = 8;
-                    break;
-                  }
-                  _context.next = 7;
-                  return this.proxyTunnel(options.url, options.proxy);
-                case 7:
-                  options.socket = _context.sent;
-                case 8:
-                  return _context.abrupt("return", {
-                    url: options.url,
-                    payload: buffer,
-                    client: {
-                      maxVersion: "TLSv1.3",
-                      ALPNProtocols: ["h2", "http/1.1"],
-                      socket: options.socket
-                    },
-                    request: _objectSpread2((_objectSpread2$1 = {}, _defineProperty(_objectSpread2$1, HTTP2_HEADER_AUTHORITY, parsed_url.host), _defineProperty(_objectSpread2$1, HTTP2_HEADER_PATH, parsed_url.pathname + parsed_url.search || "/"), _defineProperty(_objectSpread2$1, HTTP2_HEADER_SCHEME, parsed_url.protocol.split(":")[0]), _defineProperty(_objectSpread2$1, HTTP2_HEADER_METHOD, http2.constants["HTTP2_METHOD_".concat((_options$method = options.method) === null || _options$method === void 0 ? void 0 : _options$method.toUpperCase())]), _defineProperty(_objectSpread2$1, "Content-Type", "text/plain"), _defineProperty(_objectSpread2$1, "Content-Length", buffer.length), _defineProperty(_objectSpread2$1, "Accept", "*/*, image/*"), _objectSpread2$1), options === null || options === void 0 ? void 0 : options.headers)
-                  });
-                case 11:
-                  if (!options.proxy) {
-                    _context.next = 20;
-                    break;
-                  }
-                  _context.t0 = https.Agent;
-                  _context.next = 15;
-                  return this.proxyTunnel(options.url, options.proxy)["catch"](function (error) {
-                    throw error;
-                  });
-                case 15:
-                  _context.t1 = _context.sent;
-                  _context.t2 = {
-                    socket: _context.t1,
-                    keepAlive: true
-                  };
-                  options.agent = new _context.t0(_context.t2);
-                  _context.next = 21;
+            while (1) switch (_context.prev = _context.next) {
+              case 0:
+                options = _args.length > 0 && _args[0] !== undefined ? _args[0] : {};
+                parsed_url = new URL(options.url);
+                buffer = Buffer.from(_typeof(options.payload) == "object" ? JSON.stringify(options.payload) : typeof options.payload != "string" && options.payload ? String(options.payload) : options.payload || "");
+                if (!options.http2) {
+                  _context.next = 11;
                   break;
-                case 20:
-                  options.agent = new https.Agent(options);
-                case 21:
-                  return _context.abrupt("return", {
-                    url: options.url,
-                    payload: buffer,
-                    request: _objectSpread2({
-                      origin: parsed_url.origin,
-                      href: parsed_url.href,
-                      protocol: parsed_url.protocol || "https:",
-                      hostname: parsed_url.hostname,
-                      path: parsed_url.pathname + parsed_url.search || "/",
-                      port: parsed_url.port || 443,
-                      method: ((_options$method2 = options.method) === null || _options$method2 === void 0 ? void 0 : _options$method2.toUpperCase()) || "GET",
-                      maxVersion: "TLSv1.3",
-                      timeout: options.timeout || 15000,
-                      headers: _objectSpread2({
-                        accept: "application/json, text/plain, image/*, */*",
-                        "accept-language": "en-US,en;q=0.9",
-                        "Content-Length": buffer.length
-                      }, options === null || options === void 0 ? void 0 : options.headers)
-                    }, options)
-                  });
-                case 22:
-                case "end":
-                  return _context.stop();
-              }
+                }
+                if (!options.proxy) {
+                  _context.next = 8;
+                  break;
+                }
+                _context.next = 7;
+                return this.proxyTunnel(options.url, options.proxy);
+              case 7:
+                options.socket = _context.sent;
+              case 8:
+                return _context.abrupt("return", {
+                  url: options.url,
+                  payload: buffer,
+                  client: {
+                    maxVersion: "TLSv1.3",
+                    ALPNProtocols: ["h2", "http/1.1"],
+                    socket: options.socket
+                  },
+                  request: _objectSpread2((_objectSpread2$1 = {}, _defineProperty(_objectSpread2$1, HTTP2_HEADER_AUTHORITY, parsed_url.host), _defineProperty(_objectSpread2$1, HTTP2_HEADER_PATH, parsed_url.pathname + parsed_url.search || "/"), _defineProperty(_objectSpread2$1, HTTP2_HEADER_SCHEME, parsed_url.protocol.split(":")[0]), _defineProperty(_objectSpread2$1, HTTP2_HEADER_METHOD, http2.constants["HTTP2_METHOD_".concat((_options$method = options.method) === null || _options$method === void 0 ? void 0 : _options$method.toUpperCase())]), _defineProperty(_objectSpread2$1, "Content-Type", "text/plain"), _defineProperty(_objectSpread2$1, "Content-Length", buffer.length), _defineProperty(_objectSpread2$1, "Accept", "*/*, image/*"), _objectSpread2$1), options === null || options === void 0 ? void 0 : options.headers)
+                });
+              case 11:
+                if (!options.proxy) {
+                  _context.next = 20;
+                  break;
+                }
+                _context.t0 = https.Agent;
+                _context.next = 15;
+                return this.proxyTunnel(options.url, options.proxy)["catch"](function (error) {
+                  throw error;
+                });
+              case 15:
+                _context.t1 = _context.sent;
+                _context.t2 = {
+                  socket: _context.t1,
+                  keepAlive: true
+                };
+                options.agent = new _context.t0(_context.t2);
+                _context.next = 21;
+                break;
+              case 20:
+                options.agent = new https.Agent(options);
+              case 21:
+                return _context.abrupt("return", {
+                  url: options.url,
+                  payload: buffer,
+                  request: _objectSpread2({
+                    origin: parsed_url.origin,
+                    href: parsed_url.href,
+                    protocol: parsed_url.protocol || "https:",
+                    hostname: parsed_url.hostname,
+                    path: parsed_url.pathname + parsed_url.search || "/",
+                    port: parsed_url.port || 443,
+                    method: ((_options$method2 = options.method) === null || _options$method2 === void 0 ? void 0 : _options$method2.toUpperCase()) || "GET",
+                    maxVersion: "TLSv1.3",
+                    timeout: options.timeout || 15000,
+                    headers: _objectSpread2({
+                      accept: "application/json, text/plain, image/*, */*",
+                      "accept-language": "en-US,en;q=0.9",
+                      "Content-Length": buffer.length
+                    }, options === null || options === void 0 ? void 0 : options.headers)
+                  }, options)
+                });
+              case 22:
+              case "end":
+                return _context.stop();
             }
           }, _callee, this);
         }));
@@ -699,36 +710,34 @@
         var _parsed_options$paylo;
         var parsed_options, req;
         return _regeneratorRuntime().wrap(function _callee$(_context) {
-          while (1) {
-            switch (_context.prev = _context.next) {
-              case 0:
-                _context.next = 2;
-                return RequestManager$1.parseOptions(options);
-              case 2:
-                parsed_options = _context.sent;
-                delete parsed_options.request.agent;
-                if (parsed_options.request.port == 443) {
-                  delete parsed_options.request.port;
-                }
-                req = http.request(parsed_options.request, function (res) {
-                  var response_data = [];
-                  res.on("data", function (chunk) {
-                    response_data.push(chunk);
-                  });
-                  res.on("end", function () {
-                    res.status = res.statusCode;
-                    res.data = RequestManager$1.parseResponseData(response_data, res.headers);
-                    resolve(res);
-                  });
-                }).on("error", function (error) {
-                  reject(error);
+          while (1) switch (_context.prev = _context.next) {
+            case 0:
+              _context.next = 2;
+              return RequestManager$1.parseOptions(options);
+            case 2:
+              parsed_options = _context.sent;
+              delete parsed_options.request.agent;
+              if (parsed_options.request.port == 443) {
+                delete parsed_options.request.port;
+              }
+              req = http.request(parsed_options.request, function (res) {
+                var response_data = [];
+                res.on("data", function (chunk) {
+                  response_data.push(chunk);
                 });
-                if (((_parsed_options$paylo = parsed_options.payload) === null || _parsed_options$paylo === void 0 ? void 0 : _parsed_options$paylo.length) > 0) req.write(parsed_options.payload);
-                req.end();
-              case 8:
-              case "end":
-                return _context.stop();
-            }
+                res.on("end", function () {
+                  res.status = res.statusCode;
+                  res.data = RequestManager$1.parseResponseData(response_data, res.headers);
+                  resolve(res);
+                });
+              }).on("error", function (error) {
+                reject(error);
+              });
+              if (((_parsed_options$paylo = parsed_options.payload) === null || _parsed_options$paylo === void 0 ? void 0 : _parsed_options$paylo.length) > 0) req.write(parsed_options.payload);
+              req.end();
+            case 8:
+            case "end":
+              return _context.stop();
           }
         }, _callee);
       }));
@@ -744,32 +753,30 @@
         var _parsed_options$paylo;
         var parsed_options, req;
         return _regeneratorRuntime().wrap(function _callee$(_context) {
-          while (1) {
-            switch (_context.prev = _context.next) {
-              case 0:
-                _context.next = 2;
-                return RequestManager$1.parseOptions(options);
-              case 2:
-                parsed_options = _context.sent;
-                req = https.request(parsed_options.request, function (res) {
-                  var response_data = [];
-                  res.on("data", function (chunk) {
-                    response_data.push(chunk);
-                  });
-                  res.on("end", function () {
-                    res.status = res.statusCode;
-                    res.data = RequestManager$1.parseResponseData(response_data, res.headers);
-                    resolve(res);
-                  });
-                }).on("error", function (error) {
-                  reject(error);
+          while (1) switch (_context.prev = _context.next) {
+            case 0:
+              _context.next = 2;
+              return RequestManager$1.parseOptions(options);
+            case 2:
+              parsed_options = _context.sent;
+              req = https.request(parsed_options.request, function (res) {
+                var response_data = [];
+                res.on("data", function (chunk) {
+                  response_data.push(chunk);
                 });
-                if (((_parsed_options$paylo = parsed_options.payload) === null || _parsed_options$paylo === void 0 ? void 0 : _parsed_options$paylo.length) > 0) req.write(parsed_options.payload);
-                req.end();
-              case 6:
-              case "end":
-                return _context.stop();
-            }
+                res.on("end", function () {
+                  res.status = res.statusCode;
+                  res.data = RequestManager$1.parseResponseData(response_data, res.headers);
+                  resolve(res);
+                });
+              }).on("error", function (error) {
+                reject(error);
+              });
+              if (((_parsed_options$paylo = parsed_options.payload) === null || _parsed_options$paylo === void 0 ? void 0 : _parsed_options$paylo.length) > 0) req.write(parsed_options.payload);
+              req.end();
+            case 6:
+            case "end":
+              return _context.stop();
           }
         }, _callee);
       }));
@@ -786,50 +793,43 @@
         var _parsed_options$paylo;
         var parsed_options, clientSession, req;
         return _regeneratorRuntime().wrap(function _callee2$(_context2) {
-          while (1) {
-            switch (_context2.prev = _context2.next) {
-              case 0:
-                _context2.next = 2;
-                return RequestManager$1.parseOptions(options);
-              case 2:
-                parsed_options = _context2.sent;
-                clientSession = http2.connect(new URL(parsed_options.url), parsed_options.client);
-                clientSession.settings({
-                  maxConcurrentStreams: 4294967295
+          while (1) switch (_context2.prev = _context2.next) {
+            case 0:
+              _context2.next = 2;
+              return RequestManager$1.parseOptions(options);
+            case 2:
+              parsed_options = _context2.sent;
+              clientSession = http2.connect(new URL(parsed_options.url), parsed_options.client);
+              req = clientSession.request(parsed_options.request);
+              req.once("response", function (headers) {
+                var response_data = [];
+                req.on("data", function (chunk) {
+                  response_data.push(chunk);
                 });
-                req = clientSession.request(parsed_options.request);
-                req.on("response", function (headers) {
-                  var response_data = [];
-                  req.on("data", function (chunk) {
-                    response_data.push(chunk);
-                  });
-                  req.on("error", console.log);
-                  req.on("end", /*#__PURE__*/_asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee() {
-                    return _regeneratorRuntime().wrap(function _callee$(_context) {
-                      while (1) {
-                        switch (_context.prev = _context.next) {
-                          case 0:
-                            req.close();
-                            clientSession.destroy();
-                            resolve({
-                              status: headers[HTTP2_HEADER_STATUS],
-                              headers: headers,
-                              data: RequestManager$1.parseResponseData(response_data, headers)
-                            });
-                          case 3:
-                          case "end":
-                            return _context.stop();
-                        }
-                      }
-                    }, _callee);
-                  })));
-                });
-                if (((_parsed_options$paylo = parsed_options.payload) === null || _parsed_options$paylo === void 0 ? void 0 : _parsed_options$paylo.length) > 0) req.write(parsed_options.payload);
-                if (!req.readableEnded) req.end();
-              case 9:
-              case "end":
-                return _context2.stop();
-            }
+                req.once("error", console.log);
+                req.on("end", /*#__PURE__*/_asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee() {
+                  return _regeneratorRuntime().wrap(function _callee$(_context) {
+                    while (1) switch (_context.prev = _context.next) {
+                      case 0:
+                        req.destroy();
+                        clientSession.destroy();
+                        resolve({
+                          status: headers[HTTP2_HEADER_STATUS],
+                          headers: headers,
+                          data: Buffer.concat(response_data) //RequestManager.parseResponseData(response_data, headers),
+                        });
+                      case 3:
+                      case "end":
+                        return _context.stop();
+                    }
+                  }, _callee);
+                })));
+              });
+              if (((_parsed_options$paylo = parsed_options.payload) === null || _parsed_options$paylo === void 0 ? void 0 : _parsed_options$paylo.length) > 0) req.write(parsed_options.payload);
+              if (!req.readableEnded) req.end();
+            case 8:
+            case "end":
+              return _context2.stop();
           }
         }, _callee2);
       }));
@@ -882,52 +882,50 @@
             key,
             _args = arguments;
           return _regeneratorRuntime().wrap(function _callee$(_context) {
-            while (1) {
-              switch (_context.prev = _context.next) {
-                case 0:
-                  for (_len = _args.length, args = new Array(_len), _key = 0; _key < _len; _key++) {
-                    args[_key] = _args[_key];
-                  }
-                  url = args.find(function (v) {
-                    return typeof v == "string";
-                  }) || "";
-                  options = args.find(function (v) {
-                    return _typeof(v) == "object";
-                  }) || {};
-                  if (!(options !== null && options !== void 0 && options.url)) options.url = url;
-                  parsed_options = this.addCookiesInOptions(_objectSpread2(_objectSpread2(_objectSpread2({}, this.default_options), options), {}, {
-                    headers: _objectSpread2(_objectSpread2({}, (_this$default_options = this.default_options) === null || _this$default_options === void 0 ? void 0 : _this$default_options.headers), options === null || options === void 0 ? void 0 : options.headers)
-                  }));
-                  _context.next = 7;
-                  return Request(parsed_options);
-                case 7:
-                  response = _context.sent;
-                  try {
-                    if (response.headers["set-cookie"]) {
-                      if (this.cookies) {
-                        session_cookies = this.json();
-                        response_cookies = this.json(response.headers["set-cookie"].map(function (c) {
-                          return c.split(";")[0];
-                        }).join("; "));
-                        interweaving = _objectSpread2(_objectSpread2({}, session_cookies), response_cookies);
-                        str = "";
-                        for (_i = 0, _Object$keys = Object.keys(interweaving); _i < _Object$keys.length; _i++) {
-                          key = _Object$keys[_i];
-                          str += "".concat(key, "=").concat(interweaving[key], "; ");
-                        }
-                        this.cookies = str.slice(0, -2);
-                      } else {
-                        this.cookies = response.headers["set-cookie"].map(function (c) {
-                          return c.split(";")[0];
-                        }).join("; ");
+            while (1) switch (_context.prev = _context.next) {
+              case 0:
+                for (_len = _args.length, args = new Array(_len), _key = 0; _key < _len; _key++) {
+                  args[_key] = _args[_key];
+                }
+                url = args.find(function (v) {
+                  return typeof v == "string";
+                }) || "";
+                options = args.find(function (v) {
+                  return _typeof(v) == "object";
+                }) || {};
+                if (!(options !== null && options !== void 0 && options.url)) options.url = url;
+                parsed_options = this.addCookiesInOptions(_objectSpread2(_objectSpread2(_objectSpread2({}, this.default_options), options), {}, {
+                  headers: _objectSpread2(_objectSpread2({}, (_this$default_options = this.default_options) === null || _this$default_options === void 0 ? void 0 : _this$default_options.headers), options === null || options === void 0 ? void 0 : options.headers)
+                }));
+                _context.next = 7;
+                return Request(parsed_options);
+              case 7:
+                response = _context.sent;
+                try {
+                  if (response.headers["set-cookie"]) {
+                    if (this.cookies) {
+                      session_cookies = this.json();
+                      response_cookies = this.json(response.headers["set-cookie"].map(function (c) {
+                        return c.split(";")[0];
+                      }).join("; "));
+                      interweaving = _objectSpread2(_objectSpread2({}, session_cookies), response_cookies);
+                      str = "";
+                      for (_i = 0, _Object$keys = Object.keys(interweaving); _i < _Object$keys.length; _i++) {
+                        key = _Object$keys[_i];
+                        str += "".concat(key, "=").concat(interweaving[key], "; ");
                       }
+                      this.cookies = str.slice(0, -2);
+                    } else {
+                      this.cookies = response.headers["set-cookie"].map(function (c) {
+                        return c.split(";")[0];
+                      }).join("; ");
                     }
-                  } catch (error) {}
-                  return _context.abrupt("return", response);
-                case 10:
-                case "end":
-                  return _context.stop();
-              }
+                  }
+                } catch (error) {}
+                return _context.abrupt("return", response);
+              case 10:
+              case "end":
+                return _context.stop();
             }
           }, _callee, this);
         }));
