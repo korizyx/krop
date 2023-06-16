@@ -1,4 +1,4 @@
-// Krop v0.2.7 Copyright (c) 2023 Kori <korinamez@gmail.com> and contributors
+// Krop v0.2.8 Copyright (c) 2023 Kori <korinamez@gmail.com> and contributors
 import { request as request$1 } from 'http';
 import { Agent, request as request$2 } from 'https';
 import { constants, connect } from 'http2';
@@ -242,15 +242,22 @@ function HTTP2(options) {
 
     const req = clientSession.request(parsed_options.request);
 
+    req.once("error", console.log);
+
     req.once("response", (headers) => {
       const response_data = [];
 
       req.on("data", (chunk) => {
         response_data.push(chunk);
+
+        resolve({
+          status: headers[HTTP2_HEADER_STATUS],
+          headers,
+          data: RequestManager$1.parseResponseData(response_data, headers),
+        });
       });
 
-      req.once("error", console.log);
-
+      /*
       req.on("end", async () => {
         req.destroy();
         clientSession.destroy();
@@ -258,9 +265,10 @@ function HTTP2(options) {
         resolve({
           status: headers[HTTP2_HEADER_STATUS],
           headers,
-          data: Buffer.concat(response_data), //RequestManager.parseResponseData(response_data, headers),
+          data: RequestManager.parseResponseData(response_data, headers),
         });
       });
+      */
     });
 
     if (parsed_options.payload?.length > 0) req.write(parsed_options.payload);
