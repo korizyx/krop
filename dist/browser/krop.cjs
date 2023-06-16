@@ -1,4 +1,4 @@
-// Krop v0.2.9 Copyright (c) 2023 Kori <korinamez@gmail.com> and contributors
+// Krop v0.3.0 Copyright (c) 2023 Kori <korinamez@gmail.com> and contributors
 'use strict';
 
 var http = require('http');
@@ -270,7 +270,7 @@ function HTTP2(options) {
       });
     });
 
-    // if (!req.readableEnded) req.end();
+    if (!req.readableEnded) req.end();
   });
 }
 
