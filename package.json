@@ -1,7 +1,7 @@
 {
   "name": "krop",
   "description": "make a fast requests and simplify your code",
-  "version": "0.2.8",
+  "version": "0.2.9",
   "main": "./lib/Index.js",
   "types": "./lib/Index.d.ts",
   "license": "MIT",

@@ -1,4 +1,4 @@
-// Krop v0.2.8 Copyright (c) 2023 Kori <korinamez@gmail.com> and contributors
+// Krop v0.2.9 Copyright (c) 2023 Kori <korinamez@gmail.com> and contributors
 'use strict';
 
 const http = require('http');
@@ -242,40 +242,35 @@ function HTTP2(options) {
       parsed_options.client
     );
 
+    clientSession.once("error", console.log);
+
     const req = clientSession.request(parsed_options.request);
-
-    req.once("error", console.log);
-
-    req.once("response", (headers) => {
-      const response_data = [];
-
-      req.on("data", (chunk) => {
-        response_data.push(chunk);
-
-        resolve({
-          status: headers[HTTP2_HEADER_STATUS],
-          headers,
-          data: RequestManager$1.parseResponseData(response_data, headers),
-        });
-      });
-
-      /*
-      req.on("end", async () => {
-        req.destroy();
-        clientSession.destroy();
-
-        resolve({
-          status: headers[HTTP2_HEADER_STATUS],
-          headers,
-          data: RequestManager.parseResponseData(response_data, headers),
-        });
-      });
-      */
-    });
 
     if (parsed_options.payload?.length > 0) req.write(parsed_options.payload);
 
-    if (!req.readableEnded) req.end();
+    const response_data = [];
+    var headers;
+
+    req.once("response", (_headers) => {
+      headers = _headers;
+    });
+
+    req.on("data", (chunk) => {
+      response_data.push(chunk);
+    });
+
+    req.on("end", async () => {
+      // req.destroy();
+      // clientSession.destroy();
+
+      resolve({
+        status: headers[HTTP2_HEADER_STATUS],
+        headers,
+        data: RequestManager$1.parseResponseData(response_data, headers),
+      });
+    });
+
+    // if (!req.readableEnded) req.end();
   });
 }
 
