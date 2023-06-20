@@ -38,6 +38,7 @@ declare interface KropRequestOptions<D = any> {
   headers?: { [key: string]: string };
   payload?: string | {};
   proxy?: string | KropJsonProxy;
+  ciphers?: string;
   timeout?: number;
   http2?: boolean;
 }

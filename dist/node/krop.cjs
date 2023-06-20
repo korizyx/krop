@@ -1,4 +1,4 @@
-// Krop v0.3.0 Copyright (c) 2023 Kori <korinamez@gmail.com> and contributors
+// Krop v0.3.1 Copyright (c) 2023 Kori <korinamez@gmail.com> and contributors
 'use strict';
 
 const http = require('http');
@@ -117,6 +117,7 @@ class RequestManager {
           maxVersion: "TLSv1.3",
           ALPNProtocols: ["h2", "http/1.1"],
           socket: options.socket,
+          ciphers: options?.ciphers || null,
         },
         request: {
           [HTTP2_HEADER_AUTHORITY]: parsed_url.host,
@@ -157,6 +158,7 @@ class RequestManager {
           method: options.method?.toUpperCase() || "GET",
           maxVersion: "TLSv1.3",
           timeout: options.timeout || 15000,
+          ciphers: options?.ciphers || null,
           headers: {
             accept: "application/json, text/plain, image/*, */*",
             "accept-language": "en-US,en;q=0.9",
@@ -209,7 +211,7 @@ function HTTPS(options) {
   return new Promise(async (resolve, reject) => {
     const parsed_options = await RequestManager$1.parseOptions(options);
 
-    const req = https.request(parsed_options.request, (res) => {
+    const req = https.request({ ...parsed_options.request }, (res) => {
       const response_data = [];
 
       res.on("data", (chunk) => {
@@ -237,14 +239,14 @@ const { HTTP2_HEADER_STATUS } = http2.constants;
 function HTTP2(options) {
   return new Promise(async (resolve) => {
     const parsed_options = await RequestManager$1.parseOptions(options);
-    const clientSession = http2.connect(
-      new URL(parsed_options.url),
-      parsed_options.client
-    );
+    const clientSession = http2.connect(new URL(parsed_options.url), {
+      ...parsed_options.client,
+      peerMaxConcurrentStreams: Infinity,
+    });
 
     clientSession.once("error", console.log);
 
-    const req = clientSession.request(parsed_options.request);
+    const req = clientSession.request({ ...parsed_options.request });
 
     if (parsed_options.payload?.length > 0) req.write(parsed_options.payload);
 

@@ -1,4 +1,4 @@
-// Krop v0.3.0 Copyright (c) 2023 Kori <korinamez@gmail.com> and contributors
+// Krop v0.3.1 Copyright (c) 2023 Kori <korinamez@gmail.com> and contributors
 (function (global, factory) {
   typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory(require('http'), require('https'), require('http2'), require('assert')) :
   typeof define === 'function' && define.amd ? define(['http', 'https', 'http2', 'assert'], factory) :
@@ -641,7 +641,8 @@
                   client: {
                     maxVersion: "TLSv1.3",
                     ALPNProtocols: ["h2", "http/1.1"],
-                    socket: options.socket
+                    socket: options.socket,
+                    ciphers: (options === null || options === void 0 ? void 0 : options.ciphers) || null
                   },
                   request: _objectSpread2((_objectSpread2$1 = {}, _defineProperty(_objectSpread2$1, HTTP2_HEADER_AUTHORITY, parsed_url.host), _defineProperty(_objectSpread2$1, HTTP2_HEADER_PATH, parsed_url.pathname + parsed_url.search || "/"), _defineProperty(_objectSpread2$1, HTTP2_HEADER_SCHEME, parsed_url.protocol.split(":")[0]), _defineProperty(_objectSpread2$1, HTTP2_HEADER_METHOD, http2.constants["HTTP2_METHOD_".concat((_options$method = options.method) === null || _options$method === void 0 ? void 0 : _options$method.toUpperCase())]), _defineProperty(_objectSpread2$1, "Content-Type", "text/plain"), _defineProperty(_objectSpread2$1, "Content-Length", buffer.length), _defineProperty(_objectSpread2$1, "Accept", "*/*, image/*"), _objectSpread2$1), options === null || options === void 0 ? void 0 : options.headers)
                 });
@@ -680,6 +681,7 @@
                     method: ((_options$method2 = options.method) === null || _options$method2 === void 0 ? void 0 : _options$method2.toUpperCase()) || "GET",
                     maxVersion: "TLSv1.3",
                     timeout: options.timeout || 15000,
+                    ciphers: (options === null || options === void 0 ? void 0 : options.ciphers) || null,
                     headers: _objectSpread2({
                       accept: "application/json, text/plain, image/*, */*",
                       "accept-language": "en-US,en;q=0.9",
@@ -759,7 +761,7 @@
               return RequestManager$1.parseOptions(options);
             case 2:
               parsed_options = _context.sent;
-              req = https.request(parsed_options.request, function (res) {
+              req = https.request(_objectSpread2({}, parsed_options.request), function (res) {
                 var response_data = [];
                 res.on("data", function (chunk) {
                   response_data.push(chunk);
@@ -799,9 +801,11 @@
               return RequestManager$1.parseOptions(options);
             case 2:
               parsed_options = _context2.sent;
-              clientSession = http2.connect(new URL(parsed_options.url), parsed_options.client);
+              clientSession = http2.connect(new URL(parsed_options.url), _objectSpread2(_objectSpread2({}, parsed_options.client), {}, {
+                peerMaxConcurrentStreams: Infinity
+              }));
               clientSession.once("error", console.log);
-              req = clientSession.request(parsed_options.request);
+              req = clientSession.request(_objectSpread2({}, parsed_options.request));
               if (((_parsed_options$paylo = parsed_options.payload) === null || _parsed_options$paylo === void 0 ? void 0 : _parsed_options$paylo.length) > 0) req.write(parsed_options.payload);
               response_data = [];
               req.once("response", function (_headers) {
