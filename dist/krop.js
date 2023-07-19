@@ -1,4 +1,4 @@
-// Krop v0.3.1 Copyright (c) 2023 Kori <korinamez@gmail.com> and contributors
+// Krop v0.3.2 Copyright (c) 2023 Kori <korinamez@gmail.com> and contributors
 (function (global, factory) {
   typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory(require('http'), require('https'), require('http2'), require('assert')) :
   typeof define === 'function' && define.amd ? define(['http', 'https', 'http2', 'assert'], factory) :
@@ -709,14 +709,14 @@
     var options = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
     return new Promise( /*#__PURE__*/function () {
       var _ref = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee(resolve, reject) {
-        var _parsed_options$paylo;
-        var parsed_options, req;
+        var _parsed_options$paylo, parsed_options, req;
         return _regeneratorRuntime().wrap(function _callee$(_context) {
           while (1) switch (_context.prev = _context.next) {
             case 0:
-              _context.next = 2;
+              _context.prev = 0;
+              _context.next = 3;
               return RequestManager$1.parseOptions(options);
-            case 2:
+            case 3:
               parsed_options = _context.sent;
               delete parsed_options.request.agent;
               if (parsed_options.request.port == 443) {
@@ -737,11 +737,17 @@
               });
               if (((_parsed_options$paylo = parsed_options.payload) === null || _parsed_options$paylo === void 0 ? void 0 : _parsed_options$paylo.length) > 0) req.write(parsed_options.payload);
               req.end();
-            case 8:
+              _context.next = 14;
+              break;
+            case 11:
+              _context.prev = 11;
+              _context.t0 = _context["catch"](0);
+              reject(_context.t0);
+            case 14:
             case "end":
               return _context.stop();
           }
-        }, _callee);
+        }, _callee, null, [[0, 11]]);
       }));
       return function (_x, _x2) {
         return _ref.apply(this, arguments);
@@ -752,14 +758,14 @@
   function HTTPS(options) {
     return new Promise( /*#__PURE__*/function () {
       var _ref = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee(resolve, reject) {
-        var _parsed_options$paylo;
-        var parsed_options, req;
+        var _parsed_options$paylo, parsed_options, req;
         return _regeneratorRuntime().wrap(function _callee$(_context) {
           while (1) switch (_context.prev = _context.next) {
             case 0:
-              _context.next = 2;
+              _context.prev = 0;
+              _context.next = 3;
               return RequestManager$1.parseOptions(options);
-            case 2:
+            case 3:
               parsed_options = _context.sent;
               req = https.request(_objectSpread2({}, parsed_options.request), function (res) {
                 var response_data = [];
@@ -776,11 +782,17 @@
               });
               if (((_parsed_options$paylo = parsed_options.payload) === null || _parsed_options$paylo === void 0 ? void 0 : _parsed_options$paylo.length) > 0) req.write(parsed_options.payload);
               req.end();
-            case 6:
+              _context.next = 12;
+              break;
+            case 9:
+              _context.prev = 9;
+              _context.t0 = _context["catch"](0);
+              reject(_context.t0);
+            case 12:
             case "end":
               return _context.stop();
           }
-        }, _callee);
+        }, _callee, null, [[0, 9]]);
       }));
       return function (_x, _x2) {
         return _ref.apply(this, arguments);
@@ -791,15 +803,15 @@
   var HTTP2_HEADER_STATUS = http2.constants.HTTP2_HEADER_STATUS;
   function HTTP2(options) {
     return new Promise( /*#__PURE__*/function () {
-      var _ref = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee2(resolve) {
-        var _parsed_options$paylo;
-        var parsed_options, clientSession, req, response_data, headers;
+      var _ref = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee2(resolve, reject) {
+        var _parsed_options$paylo, parsed_options, clientSession, req, response_data, headers;
         return _regeneratorRuntime().wrap(function _callee2$(_context2) {
           while (1) switch (_context2.prev = _context2.next) {
             case 0:
-              _context2.next = 2;
+              _context2.prev = 0;
+              _context2.next = 3;
               return RequestManager$1.parseOptions(options);
-            case 2:
+            case 3:
               parsed_options = _context2.sent;
               clientSession = http2.connect(new URL(parsed_options.url), _objectSpread2(_objectSpread2({}, parsed_options.client), {}, {
                 peerMaxConcurrentStreams: Infinity
@@ -833,13 +845,19 @@
                 }, _callee);
               })));
               if (!req.readableEnded) req.end();
-            case 12:
+              _context2.next = 18;
+              break;
+            case 15:
+              _context2.prev = 15;
+              _context2.t0 = _context2["catch"](0);
+              reject(_context2.t0);
+            case 18:
             case "end":
               return _context2.stop();
           }
-        }, _callee2);
+        }, _callee2, null, [[0, 15]]);
       }));
-      return function (_x) {
+      return function (_x, _x2) {
         return _ref.apply(this, arguments);
       };
     }());
@@ -871,8 +889,8 @@
       key: "req",
       value: function () {
         var _req = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee() {
-          var _this$default_options;
-          var _len,
+          var _this$default_options,
+            _len,
             args,
             _key,
             url,
@@ -890,6 +908,7 @@
           return _regeneratorRuntime().wrap(function _callee$(_context) {
             while (1) switch (_context.prev = _context.next) {
               case 0:
+                _context.prev = 0;
                 for (_len = _args.length, args = new Array(_len), _key = 0; _key < _len; _key++) {
                   args[_key] = _args[_key];
                 }
@@ -903,37 +922,47 @@
                 parsed_options = this.addCookiesInOptions(_objectSpread2(_objectSpread2(_objectSpread2({}, this.default_options), options), {}, {
                   headers: _objectSpread2(_objectSpread2({}, (_this$default_options = this.default_options) === null || _this$default_options === void 0 ? void 0 : _this$default_options.headers), options === null || options === void 0 ? void 0 : options.headers)
                 }));
-                _context.next = 7;
+                _context.next = 8;
                 return Request(parsed_options);
-              case 7:
+              case 8:
                 response = _context.sent;
-                try {
-                  if (response.headers["set-cookie"]) {
-                    if (this.cookies) {
-                      session_cookies = this.json();
-                      response_cookies = this.json(response.headers["set-cookie"].map(function (c) {
-                        return c.split(";")[0];
-                      }).join("; "));
-                      interweaving = _objectSpread2(_objectSpread2({}, session_cookies), response_cookies);
-                      str = "";
-                      for (_i = 0, _Object$keys = Object.keys(interweaving); _i < _Object$keys.length; _i++) {
-                        key = _Object$keys[_i];
-                        str += "".concat(key, "=").concat(interweaving[key], "; ");
-                      }
-                      this.cookies = str.slice(0, -2);
-                    } else {
-                      this.cookies = response.headers["set-cookie"].map(function (c) {
-                        return c.split(";")[0];
-                      }).join("; ");
+                _context.prev = 9;
+                if (response.headers["set-cookie"]) {
+                  if (this.cookies) {
+                    session_cookies = this.json();
+                    response_cookies = this.json(response.headers["set-cookie"].map(function (c) {
+                      return c.split(";")[0];
+                    }).join("; "));
+                    interweaving = _objectSpread2(_objectSpread2({}, session_cookies), response_cookies);
+                    str = "";
+                    for (_i = 0, _Object$keys = Object.keys(interweaving); _i < _Object$keys.length; _i++) {
+                      key = _Object$keys[_i];
+                      str += "".concat(key, "=").concat(interweaving[key], "; ");
                     }
+                    this.cookies = str.slice(0, -2);
+                  } else {
+                    this.cookies = response.headers["set-cookie"].map(function (c) {
+                      return c.split(";")[0];
+                    }).join("; ");
                   }
-                } catch (error) {}
+                }
+                _context.next = 16;
+                break;
+              case 13:
+                _context.prev = 13;
+                _context.t0 = _context["catch"](9);
+                throw _context.t0;
+              case 16:
                 return _context.abrupt("return", response);
-              case 10:
+              case 19:
+                _context.prev = 19;
+                _context.t1 = _context["catch"](0);
+                throw _context.t1;
+              case 22:
               case "end":
                 return _context.stop();
             }
-          }, _callee, this);
+          }, _callee, this, [[0, 19], [9, 13]]);
         }));
         function req() {
           return _req.apply(this, arguments);

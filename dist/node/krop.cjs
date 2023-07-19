@@ -1,4 +1,4 @@
-// Krop v0.3.1 Copyright (c) 2023 Kori <korinamez@gmail.com> and contributors
+// Krop v0.3.2 Copyright (c) 2023 Kori <korinamez@gmail.com> and contributors
 'use strict';
 
 const http = require('http');
@@ -176,103 +176,121 @@ const RequestManager$1 = new RequestManager();
 
 function HTTP(options = {}) {
   return new Promise(async (resolve, reject) => {
-    const parsed_options = await RequestManager$1.parseOptions(options);
+    try {
+      const parsed_options = await RequestManager$1.parseOptions(options);
 
-    delete parsed_options.request.agent;
+      delete parsed_options.request.agent;
 
-    if (parsed_options.request.port == 443) {
-      delete parsed_options.request.port;
-    }
+      if (parsed_options.request.port == 443) {
+        delete parsed_options.request.port;
+      }
 
-    const req = http.request(parsed_options.request, (res) => {
-      const response_data = [];
+      const req = http.request(parsed_options.request, (res) => {
+        const response_data = [];
 
-      res.on("data", (chunk) => {
-        response_data.push(chunk);
+        res.on("data", (chunk) => {
+          response_data.push(chunk);
+        });
+
+        res.on("end", () => {
+          res.status = res.statusCode;
+          res.data = RequestManager$1.parseResponseData(
+            response_data,
+            res.headers
+          );
+
+          resolve(res);
+        });
+      }).on("error", (error) => {
+        reject(error);
       });
 
-      res.on("end", () => {
-        res.status = res.statusCode;
-        res.data = RequestManager$1.parseResponseData(response_data, res.headers);
+      if (parsed_options.payload?.length > 0) req.write(parsed_options.payload);
 
-        resolve(res);
-      });
-    }).on("error", (error) => {
+      req.end();
+    } catch (error) {
       reject(error);
-    });
-
-    if (parsed_options.payload?.length > 0) req.write(parsed_options.payload);
-
-    req.end();
+    }
   });
 }
 
 function HTTPS(options) {
   return new Promise(async (resolve, reject) => {
-    const parsed_options = await RequestManager$1.parseOptions(options);
+    try {
+      const parsed_options = await RequestManager$1.parseOptions(options);
 
-    const req = https.request({ ...parsed_options.request }, (res) => {
-      const response_data = [];
+      const req = https.request({ ...parsed_options.request }, (res) => {
+        const response_data = [];
 
-      res.on("data", (chunk) => {
-        response_data.push(chunk);
+        res.on("data", (chunk) => {
+          response_data.push(chunk);
+        });
+
+        res.on("end", () => {
+          res.status = res.statusCode;
+          res.data = RequestManager$1.parseResponseData(
+            response_data,
+            res.headers
+          );
+
+          resolve(res);
+        });
+      }).on("error", (error) => {
+        reject(error);
       });
 
-      res.on("end", () => {
-        res.status = res.statusCode;
-        res.data = RequestManager$1.parseResponseData(response_data, res.headers);
+      if (parsed_options.payload?.length > 0) req.write(parsed_options.payload);
 
-        resolve(res);
-      });
-    }).on("error", (error) => {
+      req.end();
+    } catch (error) {
       reject(error);
-    });
-
-    if (parsed_options.payload?.length > 0) req.write(parsed_options.payload);
-
-    req.end();
+    }
   });
 }
 
 const { HTTP2_HEADER_STATUS } = http2.constants;
 
 function HTTP2(options) {
-  return new Promise(async (resolve) => {
-    const parsed_options = await RequestManager$1.parseOptions(options);
-    const clientSession = http2.connect(new URL(parsed_options.url), {
-      ...parsed_options.client,
-      peerMaxConcurrentStreams: Infinity,
-    });
-
-    clientSession.once("error", console.log);
-
-    const req = clientSession.request({ ...parsed_options.request });
-
-    if (parsed_options.payload?.length > 0) req.write(parsed_options.payload);
-
-    const response_data = [];
-    var headers;
-
-    req.once("response", (_headers) => {
-      headers = _headers;
-    });
-
-    req.on("data", (chunk) => {
-      response_data.push(chunk);
-    });
-
-    req.on("end", async () => {
-      // req.destroy();
-      // clientSession.destroy();
-
-      resolve({
-        status: headers[HTTP2_HEADER_STATUS],
-        headers,
-        data: RequestManager$1.parseResponseData(response_data, headers),
+  return new Promise(async (resolve, reject) => {
+    try {
+      const parsed_options = await RequestManager$1.parseOptions(options);
+      const clientSession = http2.connect(new URL(parsed_options.url), {
+        ...parsed_options.client,
+        peerMaxConcurrentStreams: Infinity,
       });
-    });
 
-    if (!req.readableEnded) req.end();
+      clientSession.once("error", console.log);
+
+      const req = clientSession.request({ ...parsed_options.request });
+
+      if (parsed_options.payload?.length > 0) req.write(parsed_options.payload);
+
+      const response_data = [];
+      var headers;
+
+      req.once("response", (_headers) => {
+        headers = _headers;
+      });
+
+      req.on("data", (chunk) => {
+        response_data.push(chunk);
+      });
+
+      req.on("end", async () => {
+        // req.destroy();
+        // clientSession.destroy();
+
+        resolve({
+          status: headers[HTTP2_HEADER_STATUS],
+          headers,
+          data: RequestManager$1.parseResponseData(response_data, headers),
+        });
+      });
+
+      if (!req.readableEnded) req.end();
+    } catch (error) {
+      reject(error);
+    }
   });
 }
 
@@ -300,53 +318,59 @@ class Session {
   }
 
   async req(...args) {
-    const url = args.find((v) => typeof v == "string") || "";
-    const options = args.find((v) => typeof v == "object") || {};
-
-    if (!options?.url) options.url = url;
-
-    const parsed_options = this.addCookiesInOptions({
-      ...this.default_options,
-      ...options,
-      headers: {
-        ...this.default_options?.headers,
-        ...options?.headers,
-      },
-    });
-
-    const response = await Request(parsed_options);
-
     try {
-      if (response.headers["set-cookie"]) {
-        if (this.cookies) {
-          const session_cookies = this.json();
-          const response_cookies = this.json(
-            response.headers["set-cookie"]
+      const url = args.find((v) => typeof v == "string") || "";
+      const options = args.find((v) => typeof v == "object") || {};
+
+      if (!options?.url) options.url = url;
+
+      const parsed_options = this.addCookiesInOptions({
+        ...this.default_options,
+        ...options,
+        headers: {
+          ...this.default_options?.headers,
+          ...options?.headers,
+        },
+      });
+
+      const response = await Request(parsed_options);
+
+      try {
+        if (response.headers["set-cookie"]) {
+          if (this.cookies) {
+            const session_cookies = this.json();
+            const response_cookies = this.json(
+              response.headers["set-cookie"]
+                .map((c) => c.split(";")[0])
+                .join("; ")
+            );
+
+            const interweaving = {
+              ...session_cookies,
+              ...response_cookies,
+            };
+
+            var str = "";
+
+            for (const key of Object.keys(interweaving)) {
+              str += `${key}=${interweaving[key]}; `;
+            }
+
+            this.cookies = str.slice(0, -2);
+          } else {
+            this.cookies = response.headers["set-cookie"]
               .map((c) => c.split(";")[0])
-              .join("; ")
-          );
-
-          const interweaving = {
-            ...session_cookies,
-            ...response_cookies,
-          };
-
-          var str = "";
-
-          for (const key of Object.keys(interweaving)) {
-            str += `${key}=${interweaving[key]}; `;
+              .join("; ");
           }
-
-          this.cookies = str.slice(0, -2);
-        } else {
-          this.cookies = response.headers["set-cookie"]
-            .map((c) => c.split(";")[0])
-            .join("; ");
         }
+      } catch (_error) {
+        throw _error;
       }
-    } catch (error) {}
 
-    return response;
+      return response;
+    } catch (error) {
+      throw error;
+    }
   }
 
   addCookie(cookie) {
@@ -410,7 +434,7 @@ class Session {
         object[name] = value.join("=");
       }
     }
-    
+
     return object;
   }
 }
