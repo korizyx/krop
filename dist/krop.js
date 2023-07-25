@@ -1,4 +1,4 @@
-// Krop v0.3.3 Copyright (c) 2023 Kori <korinamez@gmail.com> and contributors
+// Krop v0.3.4 Copyright (c) 2023 Kori <korinamez@gmail.com> and contributors
 (function (global, factory) {
   typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory(require('http'), require('https'), require('http2'), require('assert')) :
   typeof define === 'function' && define.amd ? define(['http', 'https', 'http2', 'assert'], factory) :
