@@ -57,8 +57,10 @@ request.Session = class Session {
 
   removeCookie(cookie_name: string): true | false;
 
-  json(): { [key: string]: string };
+  json(cookie?: string, encode?: boolean): { [key: string]: string };
 };
+
+request.BETTER_CIPHERS = string;
 
 export default request;
 export class Session {
@@ -73,5 +75,5 @@ export class Session {
 
   removeCookie(cookie_name: string): true | false;
 
-  json(): { [key: string]: string };
+  json(cookie?: string, encode?: boolean): { [key: string]: string };
 }

@@ -1,4 +1,4 @@
-// Krop v0.3.2 Copyright (c) 2023 Kori <korinamez@gmail.com> and contributors
+// Krop v0.3.3 Copyright (c) 2023 Kori <korinamez@gmail.com> and contributors
 (function (global, factory) {
   typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory(require('http'), require('https'), require('http2'), require('assert')) :
   typeof define === 'function' && define.amd ? define(['http', 'https', 'http2', 'assert'], factory) :
@@ -863,6 +863,7 @@
     }());
   }
 
+  var ciphers = ["TLS_AES_256_GCM_SHA384", "TLS_CHACHA20_POLY1305_SHA256", "TLS_AES_128_GCM_SHA256", "TLS_ECDHE_ECDSA_WITH_AES_256_GCM_SHA384", "TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384", "TLS_ECDHE_ECDSA_WITH_CHACHA20_POLY1305_SHA256", "TLS_ECDHE_RSA_WITH_CHACHA20_POLY1305_SHA256", "TLS_ECDHE_ECDSA_WITH_AES_128_GCM_SHA256", "TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256"].join(":");
   function Request() {
     for (var _len = arguments.length, args = new Array(_len), _key = 0; _key < _len; _key++) {
       args[_key] = arguments[_key];
@@ -877,6 +878,7 @@
     options.url.includes("http:") || options.url.includes("https:") ? null : options.url = "https://".concat(options.url);
     return options.http2 ? HTTP2(options) : options.url.includes("http:") ? HTTP(options) : HTTPS(options);
   }
+  Request.BETTER_CIPHERS = ciphers;
 
   var Session = /*#__PURE__*/function () {
     function Session() {
@@ -1018,6 +1020,7 @@
     }, {
       key: "json",
       value: function json(str) {
+        var encode = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : true;
         var object = {};
         var _iterator = _createForOfIteratorHelper((str || this.cookies).split("; ")),
           _step;
@@ -1029,7 +1032,7 @@
               name = _cookie$split2[0],
               value = _cookie$split2.slice(1);
             if (name) {
-              object[name] = value.join("=");
+              object[name] = encode ? encodeURIComponent(value.join("=")) : value.join("=");
             }
           }
         } catch (err) {

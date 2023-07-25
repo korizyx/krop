@@ -1,7 +1,7 @@
 import krop from "../lib/Index.js";
 const { Session } = krop;
 
-test("session collect cookies", async () => {
+it("session collect cookies", async () => {
   const session = new Session({});
 
   await session.req("https://discord.com");
@@ -9,7 +9,7 @@ test("session collect cookies", async () => {
   expect(session.cookies.length > 0).toBe(true);
 });
 
-test("default headers", async () => {
+it("default headers", async () => {
   const session = new Session({
     headers: {
       "Test-Krop": "done",

@@ -1,14 +1,18 @@
 import krop from "../lib/Index.js";
 
-test("automatic add https in url", async () => {
+it("automatic add https in url", async () => {
   const { data } = await krop(
     "pt.wikipedia.org/static/images/mobile/copyright/wikipedia.png"
   );
 
-  expect(Buffer.isBuffer(data)).toBe(true);
+  const { data: data2 } = await krop({
+    url: "pt.wikipedia.org/static/images/mobile/copyright/wikipedia.png",
+  });
+
+  expect(Buffer.isBuffer(data) && Buffer.isBuffer(data2)).toBe(true);
 });
 
-test("multiple args parsing", async () => {
+it("multiple args parsing", async () => {
   const { status } = await krop("httpbin.org/post", {
     method: "POST",
   });

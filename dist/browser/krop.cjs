@@ -1,4 +1,4 @@
-// Krop v0.3.2 Copyright (c) 2023 Kori <korinamez@gmail.com> and contributors
+// Krop v0.3.3 Copyright (c) 2023 Kori <korinamez@gmail.com> and contributors
 'use strict';
 
 var http = require('http');
@@ -294,6 +294,18 @@ function HTTP2(options) {
   });
 }
 
+const ciphers = [
+  "TLS_AES_256_GCM_SHA384",
+  "TLS_CHACHA20_POLY1305_SHA256",
+  "TLS_AES_128_GCM_SHA256",
+  "TLS_ECDHE_ECDSA_WITH_AES_256_GCM_SHA384",
+  "TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384",
+  "TLS_ECDHE_ECDSA_WITH_CHACHA20_POLY1305_SHA256",
+  "TLS_ECDHE_RSA_WITH_CHACHA20_POLY1305_SHA256",
+  "TLS_ECDHE_ECDSA_WITH_AES_128_GCM_SHA256",
+  "TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256",
+].join(":");
+
 function Request(...args) {
   const url = args.find((v) => typeof v == "string") || "";
   const options = args.find((v) => typeof v == "object") || {};
@@ -310,6 +322,8 @@ function Request(...args) {
     ? HTTP(options)
     : HTTPS(options);
 }
+
+Request.BETTER_CIPHERS = ciphers;
 
 class Session {
   constructor(default_options = {}) {
@@ -424,14 +438,16 @@ class Session {
     return options;
   }
 
-  json(str) {
+  json(str, encode = true) {
     const object = {};
 
     for (const cookie of (str || this.cookies).split("; ")) {
       const [name, ...value] = cookie.split("=");
 
       if (name) {
-        object[name] = value.join("=");
+        object[name] = encode
+          ? encodeURIComponent(value.join("="))
+          : value.join("=");
       }
     }
 
