@@ -13,7 +13,7 @@ _package.version = new_version;
 writeFileSync(path, JSON.stringify(_package, null, 2));
 
 execSync("pnpm build");
-execSync(`git add . && git commit -m "${new_version}" && git push`).toString();
+execSync(`git add . && git commit -m "🧾 update version: ${new_version}" && git push`).toString();
 
 console.log(
   `Updated to version ${new_version} from version ${old_version}\n\nrun: npm publish`

@@ -1,7 +1,7 @@
 {
   "name": "krop",
   "description": "make a fast requests and simplify your code",
-  "version": "0.3.4",
+  "version": "0.3.6",
   "main": "./lib/Index.js",
   "types": "./lib/Index.d.ts",
   "license": "MIT",
@@ -52,8 +52,9 @@
     "test": "tests"
   },
   "engines": {
-    "node": ">=16.16.0",
-    "npm": ">=9.5.1"
+    "node": ">=20.9.0",
+    "pnpm": ">=8.10.2",
+    "npm": ">=10.1.0"
   },
   "devDependencies": {
     "@babel/core": "^7.20.2",

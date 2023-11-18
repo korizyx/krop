@@ -23,6 +23,7 @@
 - [x] Support [Http2](https://support.cloudflare.com/hc/en-us/articles/200168076-Understanding-Cloudflare-HTTP-2-and-HTTP-3-Support#6ncFUWOVRaVtPzYN1euBIC) _(test website/api support for http/2 here https://tools.keycdn.com/http2-test)_
 - [x] Support TLS 1.3, [as even Cloudflare said](https://www.cloudflare.com/learning/ssl/why-use-tls-1.3/) _"In a nutshell, TLS 1.3 is faster and more secure than TLS 1.2"_
 - [x] Automatic request/response data parse
+- [x] Decompression body from **gzip**, **deflate** and **brotli** _automatic_
 - [x] Session for automatic [storage cookies](https://developer.mozilla.org/pt-BR/docs/Web/HTTP/Headers/Set-Cookie)
 - [x] Already with types
 - [x] **0 dependencies**

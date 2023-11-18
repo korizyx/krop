@@ -1,9 +1,10 @@
-// Krop v0.3.4 Copyright (c) 2023 Kori <korinamez@gmail.com> and contributors
+// Krop v0.3.6 Copyright (c) 2023 Kori <korinamez@gmail.com> and contributors
 'use strict';
 
 var http = require('http');
 var https = require('https');
 var http2 = require('http2');
+var zlib = require('zlib');
 var assert = require('assert');
 
 const {
@@ -74,20 +75,45 @@ class RequestManager {
     });
   }
 
-  parseResponseData(arr_data, headers) {
-    const buffer = Buffer.concat(arr_data);
-    var data;
+  decompress(arr_data, headers) {
+    return new Promise((resolve, reject) => {
+      const buffer = Buffer.concat(arr_data);
+
+      if (headers["content-encoding"]?.includes("gzip")) {
+        const gunzip = zlib.createGunzip();
+
+        gunzip.end(buffer, function () {
+          resolve(gunzip.read().toString());
+        });
+      } else if (headers["content-encoding"]?.includes("br")) {
+        const brotli = zlib.createBrotliDecompress();
+
+        brotli.end(buffer, function () {
+          resolve(brotli.read().toString());
+        });
+      } else if (headers["content-encoding"]?.includes("deflate")) {
+        const inflate = zlib.createInflate();
+
+        inflate.end(buffer, function () {
+          resolve(inflate.read().toString());
+        });
+      } else {
+        resolve(buffer.toString());
+      }
+    });
+  }
+
+  async parseResponseData(arr_data, headers) {
+    var data = await this.decompress(arr_data, headers);
 
     try {
-      data = JSON.parse(buffer.toString());
+      data = JSON.parse(data);
     } catch (error) {
       if (
         headers["content-type"] &&
         this.midia_types.some((type) => headers["content-type"].includes(type))
       ) {
-        data = buffer;
-      } else {
-        data = buffer.toString();
+        data = Buffer.concat(arr_data);
       }
     }
 
@@ -192,9 +218,9 @@ function HTTP(options = {}) {
           response_data.push(chunk);
         });
 
-        res.on("end", () => {
+        res.on("end", async () => {
           res.status = res.statusCode;
-          res.data = RequestManager$1.parseResponseData(
+          res.data = await RequestManager$1.parseResponseData(
             response_data,
             res.headers
           );
@@ -226,9 +252,9 @@ function HTTPS(options) {
           response_data.push(chunk);
         });
 
-        res.on("end", () => {
+        res.on("end", async () => {
           res.status = res.statusCode;
-          res.data = RequestManager$1.parseResponseData(
+          res.data = await RequestManager$1.parseResponseData(
             response_data,
             res.headers
           );
@@ -283,7 +309,7 @@ function HTTP2(options) {
         resolve({
           status: headers[HTTP2_HEADER_STATUS],
           headers,
-          data: RequestManager$1.parseResponseData(response_data, headers),
+          data: await RequestManager$1.parseResponseData(response_data, headers),
         });
       });
 
