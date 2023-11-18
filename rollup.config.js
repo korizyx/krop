@@ -1,25 +1,29 @@
-import resolve from '@rollup/plugin-node-resolve';
-import commonjs from '@rollup/plugin-commonjs';
-import {terser} from "rollup-plugin-terser";
-import json from '@rollup/plugin-json';
-import { babel } from '@rollup/plugin-babel';
-import autoExternal from 'rollup-plugin-auto-external';
-import bundleSize from 'rollup-plugin-bundle-size'
-import path from 'path';
+import resolve from "@rollup/plugin-node-resolve";
+import commonjs from "@rollup/plugin-commonjs";
+import { terser } from "@rollup/plugin-terser";
+import json from "@rollup/plugin-json";
+import { babel } from "@rollup/plugin-babel";
+import autoExternal from "rollup-plugin-auto-external";
+import bundleSize from "rollup-plugin-bundle-size";
+import path from "path";
 
 const lib = require("./package.json");
-const outputFileName = 'krop';
+const outputFileName = "krop";
 const name = "krop";
-const namedInput = './lib/Index.js';
-const defaultInput = './lib/Index.js';
+const namedInput = "./lib/Index.js";
+const defaultInput = "./lib/Index.js";
 
-const buildConfig = ({es5, browser = true, minifiedVersion = true, ...config}) => {
-  const {file} = config.output;
+const buildConfig = ({
+  es5,
+  browser = true,
+  minifiedVersion = true,
+  ...config
+}) => {
+  const { file } = config.output;
   const ext = path.extname(file);
   const basename = path.basename(file, ext);
-  const extArr = ext.split('.');
+  const extArr = ext.split(".");
   extArr.shift();
-
 
   const build = ({ minified }) => ({
     input: namedInput,
@@ -49,12 +53,10 @@ const buildConfig = ({es5, browser = true, minifiedVersion = true, ...config}) =
     ],
   });
 
-  const configs = [
-    build({minified: false}),
-  ];
+  const configs = [build({ minified: false })];
 
   if (minifiedVersion) {
-    configs.push(build({minified: true}))
+    configs.push(build({ minified: true }));
   }
 
   return configs;
@@ -73,8 +75,8 @@ export default async () => {
         format: "esm",
         preferConst: true,
         exports: "named",
-        banner
-      }
+        banner,
+      },
     }),
 
     // Browser UMD bundle for CDN
@@ -86,8 +88,8 @@ export default async () => {
         name,
         format: "umd",
         exports: "default",
-        banner
-      }
+        banner,
+      },
     }),
 
     // Browser CJS bundle
@@ -100,8 +102,8 @@ export default async () => {
         name,
         format: "cjs",
         exports: "default",
-        banner
-      }
+        banner,
+      },
     }),
 
     // Node.js commonjs bundle
@@ -112,13 +114,9 @@ export default async () => {
         format: "cjs",
         preferConst: true,
         exports: "default",
-        banner
+        banner,
       },
-      plugins: [
-        autoExternal(),
-        resolve(),
-        commonjs()
-      ]
-    }
-  ]
+      plugins: [autoExternal(), resolve(), commonjs()],
+    },
+  ];
 };
