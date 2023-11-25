@@ -1,4 +1,4 @@
-// Krop v0.3.9 Copyright (c) 2023 Kori <korinamez@gmail.com> and contributors
+// Krop v0.4.0 Copyright (c) 2023 Kori <korinamez@gmail.com> and contributors
 import { request as request$1 } from 'http';
 import { Agent, request as request$2 } from 'https';
 import { constants, connect } from 'http2';
@@ -309,8 +309,8 @@ function HTTP2(options) {
       });
 
       req.on("end", async () => {
-        // req.destroy();
-        // clientSession.destroy();
+        req.destroy();
+        clientSession.destroy();
 
         resolve({
           status: headers[HTTP2_HEADER_STATUS],
