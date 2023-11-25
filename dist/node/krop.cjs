@@ -1,4 +1,4 @@
-// Krop v0.3.8 Copyright (c) 2023 Kori <korinamez@gmail.com> and contributors
+// Krop v0.3.9 Copyright (c) 2023 Kori <korinamez@gmail.com> and contributors
 'use strict';
 
 const http = require('http');
@@ -289,7 +289,7 @@ function HTTP2(options) {
         peerMaxConcurrentStreams: Infinity,
       });
 
-      clientSession.once("error", console.log);
+      clientSession.on("error", reject);
 
       const req = clientSession.request({ ...parsed_options.request });
 

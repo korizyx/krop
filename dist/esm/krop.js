@@ -1,4 +1,4 @@
-// Krop v0.3.8 Copyright (c) 2023 Kori <korinamez@gmail.com> and contributors
+// Krop v0.3.9 Copyright (c) 2023 Kori <korinamez@gmail.com> and contributors
 import { request as request$1 } from 'http';
 import { Agent, request as request$2 } from 'https';
 import { constants, connect } from 'http2';
@@ -287,7 +287,7 @@ function HTTP2(options) {
         peerMaxConcurrentStreams: Infinity,
       });
 
-      clientSession.once("error", console.log);
+      clientSession.on("error", reject);
 
       const req = clientSession.request({ ...parsed_options.request });
 

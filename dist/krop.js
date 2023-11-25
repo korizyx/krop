@@ -1,4 +1,4 @@
-// Krop v0.3.8 Copyright (c) 2023 Kori <korinamez@gmail.com> and contributors
+// Krop v0.3.9 Copyright (c) 2023 Kori <korinamez@gmail.com> and contributors
 (function (global, factory) {
   typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory(require('http'), require('https'), require('http2'), require('zlib'), require('assert')) :
   typeof define === 'function' && define.amd ? define(['http', 'https', 'http2', 'zlib', 'assert'], factory) :
@@ -886,7 +886,7 @@
               clientSession = http2.connect(new URL(parsed_options.url), _objectSpread2(_objectSpread2({}, parsed_options.client), {}, {
                 peerMaxConcurrentStreams: Infinity
               }));
-              clientSession.once("error", console.log);
+              clientSession.on("error", reject);
               req = clientSession.request(_objectSpread2({}, parsed_options.request));
               if (((_parsed_options$paylo = parsed_options.payload) === null || _parsed_options$paylo === void 0 ? void 0 : _parsed_options$paylo.length) > 0) req.write(parsed_options.payload);
               response_data = [];
