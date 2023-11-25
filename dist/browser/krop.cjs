@@ -1,4 +1,4 @@
-// Krop v0.3.7 Copyright (c) 2023 Kori <korinamez@gmail.com> and contributors
+// Krop v0.3.8 Copyright (c) 2023 Kori <korinamez@gmail.com> and contributors
 'use strict';
 
 var http = require('http');
@@ -304,6 +304,10 @@ function HTTP2(options) {
 
       req.on("data", (chunk) => {
         response_data.push(chunk);
+      });
+
+      req.on("error", (error) => {
+        reject(error);
       });
 
       req.on("end", async () => {

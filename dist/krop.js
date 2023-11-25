@@ -1,4 +1,4 @@
-// Krop v0.3.7 Copyright (c) 2023 Kori <korinamez@gmail.com> and contributors
+// Krop v0.3.8 Copyright (c) 2023 Kori <korinamez@gmail.com> and contributors
 (function (global, factory) {
   typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory(require('http'), require('https'), require('http2'), require('zlib'), require('assert')) :
   typeof define === 'function' && define.amd ? define(['http', 'https', 'http2', 'zlib', 'assert'], factory) :
@@ -896,6 +896,9 @@
               req.on("data", function (chunk) {
                 response_data.push(chunk);
               });
+              req.on("error", function (error) {
+                reject(error);
+              });
               req.on("end", /*#__PURE__*/_asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee() {
                 return _regeneratorRuntime().wrap(function _callee$(_context) {
                   while (1) switch (_context.prev = _context.next) {
@@ -920,17 +923,17 @@
                 }, _callee);
               })));
               if (!req.readableEnded) req.end();
-              _context2.next = 18;
+              _context2.next = 19;
               break;
-            case 15:
-              _context2.prev = 15;
+            case 16:
+              _context2.prev = 16;
               _context2.t0 = _context2["catch"](0);
               reject(_context2.t0);
-            case 18:
+            case 19:
             case "end":
               return _context2.stop();
           }
-        }, _callee2, null, [[0, 15]]);
+        }, _callee2, null, [[0, 16]]);
       }));
       return function (_x, _x2) {
         return _ref.apply(this, arguments);
