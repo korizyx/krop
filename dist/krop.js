@@ -1,4 +1,4 @@
-// Krop v0.3.6 Copyright (c) 2023 Kori <korinamez@gmail.com> and contributors
+// Krop v0.3.7 Copyright (c) 2023 Kori <korinamez@gmail.com> and contributors
 (function (global, factory) {
   typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory(require('http'), require('https'), require('http2'), require('zlib'), require('assert')) :
   typeof define === 'function' && define.amd ? define(['http', 'https', 'http2', 'zlib', 'assert'], factory) :
@@ -570,12 +570,12 @@
             host: parsed_proxy.host,
             port: parsed_proxy.port,
             method: "CONNECT",
-            maxVersion: "TLSv1.3",
+            // maxVersion: "TLSv1.3",
             path: "".concat(urlParsed.hostname, ":").concat(urlParsed.port ? urlParsed.port : 443),
             timeout: timeout,
             headers: headers
           }).on("connect", function (response, socket) {
-            if (response.statusCode == 200) {
+            if (response.statusCode <= 299) {
               resolve(socket);
             } else {
               reject(response);
@@ -660,54 +660,55 @@
             while (1) switch (_context2.prev = _context2.next) {
               case 0:
                 options = _args2.length > 0 && _args2[0] !== undefined ? _args2[0] : {};
+                _context2.prev = 1;
                 parsed_url = new URL(options.url);
                 buffer = Buffer.from(_typeof(options.payload) == "object" ? JSON.stringify(options.payload) : typeof options.payload != "string" && options.payload ? String(options.payload) : options.payload || "");
                 if (!options.http2) {
-                  _context2.next = 11;
+                  _context2.next = 12;
                   break;
                 }
                 if (!options.proxy) {
-                  _context2.next = 8;
+                  _context2.next = 9;
                   break;
                 }
-                _context2.next = 7;
+                _context2.next = 8;
                 return this.proxyTunnel(options.url, options.proxy);
-              case 7:
-                options.socket = _context2.sent;
               case 8:
+                options.socket = _context2.sent;
+              case 9:
                 return _context2.abrupt("return", {
                   url: options.url,
                   payload: buffer,
                   client: {
-                    maxVersion: "TLSv1.3",
+                    maxVersion: (options === null || options === void 0 ? void 0 : options.tlsVersion) || null,
                     ALPNProtocols: ["h2", "http/1.1"],
                     socket: options.socket,
                     ciphers: (options === null || options === void 0 ? void 0 : options.ciphers) || null
                   },
                   request: _objectSpread2(_defineProperty(_defineProperty(_defineProperty(_defineProperty(_defineProperty(_defineProperty(_defineProperty({}, HTTP2_HEADER_AUTHORITY, parsed_url.host), HTTP2_HEADER_PATH, parsed_url.pathname + parsed_url.search || "/"), HTTP2_HEADER_SCHEME, parsed_url.protocol.split(":")[0]), HTTP2_HEADER_METHOD, http2.constants["HTTP2_METHOD_".concat((_options$method = options.method) === null || _options$method === void 0 ? void 0 : _options$method.toUpperCase())]), "Content-Type", "text/plain"), "Content-Length", buffer.length), "Accept", "*/*, image/*"), options === null || options === void 0 ? void 0 : options.headers)
                 });
-              case 11:
+              case 12:
                 if (!options.proxy) {
-                  _context2.next = 20;
+                  _context2.next = 21;
                   break;
                 }
                 _context2.t0 = https.Agent;
-                _context2.next = 15;
+                _context2.next = 16;
                 return this.proxyTunnel(options.url, options.proxy)["catch"](function (error) {
                   throw error;
                 });
-              case 15:
+              case 16:
                 _context2.t1 = _context2.sent;
                 _context2.t2 = {
                   socket: _context2.t1,
                   keepAlive: true
                 };
                 options.agent = new _context2.t0(_context2.t2);
-                _context2.next = 21;
+                _context2.next = 22;
                 break;
-              case 20:
-                options.agent = new https.Agent(options);
               case 21:
+                options.agent = new https.Agent(options);
+              case 22:
                 return _context2.abrupt("return", {
                   url: options.url,
                   payload: buffer,
@@ -719,7 +720,7 @@
                     path: parsed_url.pathname + parsed_url.search || "/",
                     port: parsed_url.port || 443,
                     method: ((_options$method2 = options.method) === null || _options$method2 === void 0 ? void 0 : _options$method2.toUpperCase()) || "GET",
-                    maxVersion: "TLSv1.3",
+                    maxVersion: (options === null || options === void 0 ? void 0 : options.tlsVersion) || null,
                     timeout: options.timeout || 15000,
                     ciphers: (options === null || options === void 0 ? void 0 : options.ciphers) || null,
                     headers: _objectSpread2({
@@ -729,11 +730,18 @@
                     }, options === null || options === void 0 ? void 0 : options.headers)
                   }, options)
                 });
-              case 22:
+              case 23:
+                _context2.next = 28;
+                break;
+              case 25:
+                _context2.prev = 25;
+                _context2.t3 = _context2["catch"](1);
+                throw _context2.t3;
+              case 28:
               case "end":
                 return _context2.stop();
             }
-          }, _callee2, this);
+          }, _callee2, this, [[1, 25]]);
         }));
         function parseOptions() {
           return _parseOptions.apply(this, arguments);

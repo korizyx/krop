@@ -41,6 +41,7 @@ declare interface KropRequestOptions<D = any> {
   ciphers?: string;
   timeout?: number;
   http2?: boolean;
+  tlsVersion?: 'TLSv1' | 'TLSv1.1' | 'TLSv1.2' | 'TLSv1.3';
 }
 
 function request(...args: [KropRequestOptions | string]): Promise<KropResponse>;

@@ -1,4 +1,4 @@
-// Krop v0.3.6 Copyright (c) 2023 Kori <korinamez@gmail.com> and contributors
+// Krop v0.3.7 Copyright (c) 2023 Kori <korinamez@gmail.com> and contributors
 'use strict';
 
 var http = require('http');
@@ -57,13 +57,13 @@ class RequestManager {
         host: parsed_proxy.host,
         port: parsed_proxy.port,
         method: "CONNECT",
-        maxVersion: "TLSv1.3",
+        // maxVersion: "TLSv1.3",
         path: `${urlParsed.hostname}:${urlParsed.port ? urlParsed.port : 443}`,
         timeout,
         headers,
       })
         .on("connect", (response, socket) => {
-          if (response.statusCode == 200) {
+          if (response.statusCode <= 299) {
             resolve(socket);
           } else {
             reject(response);
@@ -121,79 +121,83 @@ class RequestManager {
   }
 
   async parseOptions(options = {}) {
-    const parsed_url = new URL(options.url);
+    try {
+      const parsed_url = new URL(options.url);
 
-    const buffer = Buffer.from(
-      typeof options.payload == "object"
-        ? JSON.stringify(options.payload)
-        : typeof options.payload != "string" && options.payload
-        ? String(options.payload)
-        : options.payload || ""
-    );
+      const buffer = Buffer.from(
+        typeof options.payload == "object"
+          ? JSON.stringify(options.payload)
+          : typeof options.payload != "string" && options.payload
+          ? String(options.payload)
+          : options.payload || ""
+      );
 
-    if (options.http2) {
-      if (options.proxy) {
-        options.socket = await this.proxyTunnel(options.url, options.proxy);
-      }
+      if (options.http2) {
+        if (options.proxy) {
+          options.socket = await this.proxyTunnel(options.url, options.proxy);
+        }
 
-      return {
-        url: options.url,
-        payload: buffer,
-        client: {
-          maxVersion: "TLSv1.3",
-          ALPNProtocols: ["h2", "http/1.1"],
-          socket: options.socket,
-          ciphers: options?.ciphers || null,
-        },
-        request: {
-          [HTTP2_HEADER_AUTHORITY]: parsed_url.host,
-          [HTTP2_HEADER_PATH]: parsed_url.pathname + parsed_url.search || "/",
-          [HTTP2_HEADER_SCHEME]: parsed_url.protocol.split(":")[0],
-          [HTTP2_HEADER_METHOD]:
-            http2.constants[`HTTP2_METHOD_${options.method?.toUpperCase()}`],
-          "Content-Type": "text/plain",
-          "Content-Length": buffer.length,
-          Accept: "*/*, image/*",
-          ...options?.headers,
-        },
-      };
-    } else {
-      if (options.proxy) {
-        options.agent = new https.Agent({
-          socket: await this.proxyTunnel(options.url, options.proxy).catch(
-            (error) => {
-              throw error;
-            }
-          ),
-          keepAlive: true,
-        });
-      } else {
-        options.agent = new https.Agent(options);
-      }
-
-      return {
-        url: options.url,
-        payload: buffer,
-        request: {
-          origin: parsed_url.origin,
-          href: parsed_url.href,
-          protocol: parsed_url.protocol || "https:",
-          hostname: parsed_url.hostname,
-          path: parsed_url.pathname + parsed_url.search || "/",
-          port: parsed_url.port || 443,
-          method: options.method?.toUpperCase() || "GET",
-          maxVersion: "TLSv1.3",
-          timeout: options.timeout || 15000,
-          ciphers: options?.ciphers || null,
-          headers: {
-            accept: "application/json, text/plain, image/*, */*",
-            "accept-language": "en-US,en;q=0.9",
+        return {
+          url: options.url,
+          payload: buffer,
+          client: {
+            maxVersion: options?.tlsVersion || null,
+            ALPNProtocols: ["h2", "http/1.1"],
+            socket: options.socket,
+            ciphers: options?.ciphers || null,
+          },
+          request: {
+            [HTTP2_HEADER_AUTHORITY]: parsed_url.host,
+            [HTTP2_HEADER_PATH]: parsed_url.pathname + parsed_url.search || "/",
+            [HTTP2_HEADER_SCHEME]: parsed_url.protocol.split(":")[0],
+            [HTTP2_HEADER_METHOD]:
+              http2.constants[`HTTP2_METHOD_${options.method?.toUpperCase()}`],
+            "Content-Type": "text/plain",
             "Content-Length": buffer.length,
+            Accept: "*/*, image/*",
             ...options?.headers,
           },
-          ...options,
-        },
-      };
+        };
+      } else {
+        if (options.proxy) {
+          options.agent = new https.Agent({
+            socket: await this.proxyTunnel(options.url, options.proxy).catch(
+              (error) => {
+                throw error;
+              }
+            ),
+            keepAlive: true,
+          });
+        } else {
+          options.agent = new https.Agent(options);
+        }
+
+        return {
+          url: options.url,
+          payload: buffer,
+          request: {
+            origin: parsed_url.origin,
+            href: parsed_url.href,
+            protocol: parsed_url.protocol || "https:",
+            hostname: parsed_url.hostname,
+            path: parsed_url.pathname + parsed_url.search || "/",
+            port: parsed_url.port || 443,
+            method: options.method?.toUpperCase() || "GET",
+            maxVersion: options?.tlsVersion || null,
+            timeout: options.timeout || 15000,
+            ciphers: options?.ciphers || null,
+            headers: {
+              accept: "application/json, text/plain, image/*, */*",
+              "accept-language": "en-US,en;q=0.9",
+              "Content-Length": buffer.length,
+              ...options?.headers,
+            },
+            ...options,
+          },
+        };
+      }
+    } catch (error) {
+      throw error;
     }
   }
 }
