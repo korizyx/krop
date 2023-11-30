@@ -41,6 +41,7 @@ declare interface KropRequestOptions<D = any> {
   ciphers?: string;
   timeout?: number;
   http2?: boolean;
+  retry?: number;
   tlsVersion?: 'TLSv1' | 'TLSv1.1' | 'TLSv1.2' | 'TLSv1.3';
 }
 
