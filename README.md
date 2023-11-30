@@ -285,10 +285,10 @@ console.log(response.headers["content-type"], response.data.length);
   proxy: 'https://foo:bar@127.0.0.1:80',
 
   // support http2
-  http2: false // default
+  http2: false, // default
 
   // if do a error it's try again
-  retry: 0 // default
+  retry: 0, // default
 
   // version for use tls
   tlsVersion: 'TLSv1' | 'TLSv1.1' | 'TLSv1.2' | 'TLSv1.3',
