@@ -1,4 +1,4 @@
-// Krop v0.4.0 Copyright (c) 2023 Kori <korinamez@gmail.com> and contributors
+// Krop v0.4.1 Copyright (c) 2023 Kori <korinamez@gmail.com> and contributors
 (function (global, factory) {
   typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory(require('http'), require('https'), require('http2'), require('zlib'), require('assert')) :
   typeof define === 'function' && define.amd ? define(['http', 'https', 'http2', 'zlib', 'assert'], factory) :
@@ -956,7 +956,16 @@
     }) || {};
     if (!(options !== null && options !== void 0 && options.url)) options.url = url;
     options.url.includes("http:") || options.url.includes("https:") ? null : options.url = "https://".concat(options.url);
-    return options.http2 ? HTTP2(options) : options.url.includes("http:") ? HTTP(options) : HTTPS(options);
+    try {
+      return options.http2 ? HTTP2(options) : options.url.includes("http:") ? HTTP(options) : HTTPS(options);
+    } catch (error) {
+      if (options !== null && options !== void 0 && options.retry && options.retry > 0) {
+        options.retry--;
+        return Request(options);
+      } else {
+        throw error;
+      }
+    }
   }
   Request.BETTER_CIPHERS = ciphers;
 

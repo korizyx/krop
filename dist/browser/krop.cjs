@@ -1,4 +1,4 @@
-// Krop v0.4.0 Copyright (c) 2023 Kori <korinamez@gmail.com> and contributors
+// Krop v0.4.1 Copyright (c) 2023 Kori <korinamez@gmail.com> and contributors
 'use strict';
 
 var http = require('http');
@@ -350,11 +350,20 @@ function Request(...args) {
     ? null
     : (options.url = `https://${options.url}`);
 
-  return options.http2
-    ? HTTP2(options)
-    : options.url.includes("http:")
-    ? HTTP(options)
-    : HTTPS(options);
+  try {
+    return options.http2
+      ? HTTP2(options)
+      : options.url.includes("http:")
+      ? HTTP(options)
+      : HTTPS(options);
+  } catch (error) {
+    if (options?.retry && options.retry > 0) {
+      options.retry--;
+      return Request(options);
+    } else {
+      throw error;
+    }
+  }
 }
 
 Request.BETTER_CIPHERS = ciphers;
