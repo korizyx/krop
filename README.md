@@ -28,7 +28,7 @@
 - [x] Already with types
 - [x] **0 dependencies**
 - [x] Fastest between **Superagent**, **Axios** and **Got**
-<img src="https://i.imgur.com/jFERStu.png">
+      <img src="https://i.imgur.com/jFERStu.png">
 
 ## Install
 
@@ -287,7 +287,13 @@ console.log(response.headers["content-type"], response.data.length);
   // support http2
   http2: false // default
 
-  ciphers: "TLS_AES_128_GCM_SHA256;TLS_CHACHA20_POLY1305_SHA256;TLS_AES_256_GCM_SHA384;TLS_ECDHE_ECDSA_WITH_AES_128_GCM_SHA256;TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256;TLS_ECDHE_ECDSA_WITH_CHACHA20_POLY1305_SHA256;TLS_ECDHE_RSA_WITH_CHACHA20_POLY1305_SHA256;TLS_ECDHE_ECDSA_WITH_AES_256_GCM_SHA384;TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384;TLS_ECDHE_ECDSA_WITH_AES_256_CBC_SHA;TLS_ECDHE_ECDSA_WITH_AES_128_CBC_SHA;TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA;TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA;TLS_RSA_WITH_AES_128_GCM_SHA256;TLS_RSA_WITH_AES_256_GCM_SHA384;TLS_RSA_WITH_AES_128_CBC_SHA;TLS_RSA_WITH_AES_256_CBC_SHA",
+  // if do a error it's try again
+  retry: 0 // default
+
+  // version for use tls
+  tlsVersion: 'TLSv1' | 'TLSv1.1' | 'TLSv1.2' | 'TLSv1.3',
+
+  ciphers: "TLS_AES_128_GCM_SHA256:...",
 }
 ```
 
