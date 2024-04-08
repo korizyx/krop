@@ -1,4 +1,4 @@
-// Krop v0.4.3 Copyright (c) 2023 Kori <korinamez@gmail.com> and contributors
+// Krop v0.4.4 Copyright (c) 2024 Kori <korinamez@gmail.com> and contributors
 import { request as request$1 } from 'http';
 import { Agent, request as request$2 } from 'https';
 import { constants, connect } from 'http2';
@@ -356,7 +356,7 @@ function Request(...args) {
       : HTTPS(options);
   } catch (error) {
     if (options?.retry && options.retry > 0) {
-      options.retry--;
+      --options.retry;
       return Request(options);
     } else {
       throw error;

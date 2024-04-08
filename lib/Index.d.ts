@@ -45,7 +45,9 @@ declare interface KropRequestOptions<D = any> {
   tlsVersion?: 'TLSv1' | 'TLSv1.1' | 'TLSv1.2' | 'TLSv1.3';
 }
 
-function request(...args: [KropRequestOptions | string]): Promise<KropResponse>;
+function request(...args: [KropRequestOptions | string]): Promise<KropResponse> {
+  BETTER_CIPHERS: string
+};
 
 request.Session = class Session {
   declare cookies: string;
@@ -62,7 +64,6 @@ request.Session = class Session {
   json(cookie?: string, encode?: boolean): { [key: string]: string };
 };
 
-request.BETTER_CIPHERS = string;
 
 export default request;
 export class Session {
