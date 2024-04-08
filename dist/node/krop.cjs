@@ -1,4 +1,4 @@
-// Krop v0.4.4 Copyright (c) 2024 Kori <korinamez@gmail.com> and contributors
+// Krop v0.4.5 Copyright (c) 2024 Kori <korinamez@gmail.com> and contributors
 'use strict';
 
 const http = require('http');
@@ -80,24 +80,23 @@ class RequestManager {
       const buffer = Buffer.concat(arr_data);
 
       if (headers["content-encoding"]?.includes("gzip")) {
-        const gunzip = zlib.createGunzip();
-
-        gunzip.end(buffer, function () {
-          resolve(gunzip.read().toString());
+        zlib.gunzip(buffer, (err, dezipped) => {
+          resolve(dezipped.toString());
         });
       } else if (headers["content-encoding"]?.includes("br")) {
         const brotli = zlib.createBrotliDecompress();
-
-        brotli.end(buffer, function () {
+        console.log('br');
+        brotli.end(buffer, () => {
           resolve(brotli.read().toString());
         });
       } else if (headers["content-encoding"]?.includes("deflate")) {
         const inflate = zlib.createInflate();
-
-        inflate.end(buffer, function () {
+        console.log('deflate');
+        inflate.end(buffer, () => {
           resolve(inflate.read().toString());
         });
       } else {
+        console.log('noting');
         resolve(buffer.toString());
       }
     });
@@ -105,7 +104,7 @@ class RequestManager {
 
   async parseResponseData(arr_data, headers) {
     var data = await this.decompress(arr_data, headers);
-
+    console.log("data",typeof data);
     try {
       data = JSON.parse(data);
     } catch (error) {

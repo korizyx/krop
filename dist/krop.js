@@ -1,4 +1,4 @@
-// Krop v0.4.4 Copyright (c) 2024 Kori <korinamez@gmail.com> and contributors
+// Krop v0.4.5 Copyright (c) 2024 Kori <korinamez@gmail.com> and contributors
 (function (global, factory) {
   typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory(require('http'), require('https'), require('http2'), require('zlib'), require('assert')) :
   typeof define === 'function' && define.amd ? define(['http', 'https', 'http2', 'zlib', 'assert'], factory) :
@@ -161,7 +161,7 @@
     function makeInvokeMethod(e, r, n) {
       var o = h;
       return function (i, a) {
-        if (o === f) throw new Error("Generator is already running");
+        if (o === f) throw Error("Generator is already running");
         if (o === s) {
           if ("throw" === i) throw a;
           return {
@@ -303,7 +303,7 @@
             } else if (c) {
               if (this.prev < i.catchLoc) return handle(i.catchLoc, !0);
             } else {
-              if (!u) throw new Error("try statement without catch or finally");
+              if (!u) throw Error("try statement without catch or finally");
               if (this.prev < i.finallyLoc) return handle(i.finallyLoc);
             }
           }
@@ -343,7 +343,7 @@
             return o;
           }
         }
-        throw new Error("illegal catch attempt");
+        throw Error("illegal catch attempt");
       },
       delegateYield: function (e, r, n) {
         return this.delegate = {
@@ -353,6 +353,20 @@
         }, "next" === this.method && (this.arg = t), y;
       }
     }, e;
+  }
+  function _toPrimitive(t, r) {
+    if ("object" != typeof t || !t) return t;
+    var e = t[Symbol.toPrimitive];
+    if (void 0 !== e) {
+      var i = e.call(t, r || "default");
+      if ("object" != typeof i) return i;
+      throw new TypeError("@@toPrimitive must return a primitive value.");
+    }
+    return ("string" === r ? String : Number)(t);
+  }
+  function _toPropertyKey(t) {
+    var i = _toPrimitive(t, "string");
+    return "symbol" == typeof i ? i : i + "";
   }
   function _typeof(o) {
     "@babel/helpers - typeof";
@@ -508,20 +522,6 @@
       }
     };
   }
-  function _toPrimitive(input, hint) {
-    if (typeof input !== "object" || input === null) return input;
-    var prim = input[Symbol.toPrimitive];
-    if (prim !== undefined) {
-      var res = prim.call(input, hint || "default");
-      if (typeof res !== "object") return res;
-      throw new TypeError("@@toPrimitive must return a primitive value.");
-    }
-    return (hint === "string" ? String : Number)(input);
-  }
-  function _toPropertyKey(arg) {
-    var key = _toPrimitive(arg, "string");
-    return typeof key === "symbol" ? key : String(key);
-  }
 
   var HTTP2_HEADER_PATH = http2.constants.HTTP2_HEADER_PATH,
     HTTP2_HEADER_METHOD = http2.constants.HTTP2_HEADER_METHOD,
@@ -532,7 +532,7 @@
       _classCallCheck(this, RequestManager);
       this.midia_types = ["image", "video", "audio", "font"];
     }
-    _createClass(RequestManager, [{
+    return _createClass(RequestManager, [{
       key: "proxyParse",
       value: function proxyParse(text) {
         var input = text;
@@ -594,21 +594,23 @@
           var _headers$contentEnco, _headers$contentEnco2, _headers$contentEnco3;
           var buffer = Buffer.concat(arr_data);
           if ((_headers$contentEnco = headers["content-encoding"]) !== null && _headers$contentEnco !== void 0 && _headers$contentEnco.includes("gzip")) {
-            var gunzip = zlib.createGunzip();
-            gunzip.end(buffer, function () {
-              resolve(gunzip.read().toString());
+            zlib.gunzip(buffer, function (err, dezipped) {
+              resolve(dezipped.toString());
             });
           } else if ((_headers$contentEnco2 = headers["content-encoding"]) !== null && _headers$contentEnco2 !== void 0 && _headers$contentEnco2.includes("br")) {
             var brotli = zlib.createBrotliDecompress();
+            console.log('br');
             brotli.end(buffer, function () {
               resolve(brotli.read().toString());
             });
           } else if ((_headers$contentEnco3 = headers["content-encoding"]) !== null && _headers$contentEnco3 !== void 0 && _headers$contentEnco3.includes("deflate")) {
             var inflate = zlib.createInflate();
+            console.log('deflate');
             inflate.end(buffer, function () {
               resolve(inflate.read().toString());
             });
           } else {
+            console.log('noting');
             resolve(buffer.toString());
           }
         });
@@ -625,6 +627,7 @@
                 return this.decompress(arr_data, headers);
               case 2:
                 data = _context.sent;
+                console.log("data", _typeof(data));
                 try {
                   data = JSON.parse(data);
                 } catch (error) {
@@ -635,7 +638,7 @@
                   }
                 }
                 return _context.abrupt("return", data);
-              case 5:
+              case 6:
               case "end":
                 return _context.stop();
             }
@@ -749,7 +752,6 @@
         return parseOptions;
       }()
     }]);
-    return RequestManager;
   }();
   var RequestManager$1 = new RequestManager();
 
@@ -976,7 +978,7 @@
       this.default_options = default_options;
       this.cookies = "";
     }
-    _createClass(Session, [{
+    return _createClass(Session, [{
       key: "req",
       value: function () {
         var _req = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee() {
@@ -1132,7 +1134,6 @@
         return object;
       }
     }]);
-    return Session;
   }();
 
   ["get", "post", "patch", "options", "delete", "head", "put", "link", "unlink", "purge"].forEach(function (method) {
