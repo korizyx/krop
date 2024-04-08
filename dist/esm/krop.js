@@ -1,8 +1,8 @@
-// Krop v0.4.5 Copyright (c) 2024 Kori <korinamez@gmail.com> and contributors
+// Krop v0.4.6 Copyright (c) 2024 Kori <korinamez@gmail.com> and contributors
 import { request as request$1 } from 'http';
 import { Agent, request as request$2 } from 'https';
 import { constants, connect } from 'http2';
-import { gunzip, createBrotliDecompress, createInflate } from 'zlib';
+import { gunzip, brotliDecompress, inflate } from 'zlib';
 import assert from 'assert';
 
 const {
@@ -82,19 +82,14 @@ class RequestManager {
           resolve(dezipped.toString());
         });
       } else if (headers["content-encoding"]?.includes("br")) {
-        const brotli = createBrotliDecompress();
-        console.log('br');
-        brotli.end(buffer, () => {
-          resolve(brotli.read().toString());
+        brotliDecompress(buffer, (err, dezipped) => {
+          resolve(dezipped.toString());
         });
       } else if (headers["content-encoding"]?.includes("deflate")) {
-        const inflate = createInflate();
-        console.log('deflate');
-        inflate.end(buffer, () => {
-          resolve(inflate.read().toString());
+        inflate(buffer, (err, dezipped) => {
+          resolve(dezipped.toString());
         });
       } else {
-        console.log('noting');
         resolve(buffer.toString());
       }
     });
@@ -102,7 +97,7 @@ class RequestManager {
 
   async parseResponseData(arr_data, headers) {
     var data = await this.decompress(arr_data, headers);
-    console.log("data",typeof data);
+    console.log("data", typeof data);
     try {
       data = JSON.parse(data);
     } catch (error) {

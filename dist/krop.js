@@ -1,4 +1,4 @@
-// Krop v0.4.5 Copyright (c) 2024 Kori <korinamez@gmail.com> and contributors
+// Krop v0.4.6 Copyright (c) 2024 Kori <korinamez@gmail.com> and contributors
 (function (global, factory) {
   typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory(require('http'), require('https'), require('http2'), require('zlib'), require('assert')) :
   typeof define === 'function' && define.amd ? define(['http', 'https', 'http2', 'zlib', 'assert'], factory) :
@@ -598,19 +598,14 @@
               resolve(dezipped.toString());
             });
           } else if ((_headers$contentEnco2 = headers["content-encoding"]) !== null && _headers$contentEnco2 !== void 0 && _headers$contentEnco2.includes("br")) {
-            var brotli = zlib.createBrotliDecompress();
-            console.log('br');
-            brotli.end(buffer, function () {
-              resolve(brotli.read().toString());
+            zlib.brotliDecompress(buffer, function (err, dezipped) {
+              resolve(dezipped.toString());
             });
           } else if ((_headers$contentEnco3 = headers["content-encoding"]) !== null && _headers$contentEnco3 !== void 0 && _headers$contentEnco3.includes("deflate")) {
-            var inflate = zlib.createInflate();
-            console.log('deflate');
-            inflate.end(buffer, function () {
-              resolve(inflate.read().toString());
+            zlib.inflate(buffer, function (err, dezipped) {
+              resolve(dezipped.toString());
             });
           } else {
-            console.log('noting');
             resolve(buffer.toString());
           }
         });
