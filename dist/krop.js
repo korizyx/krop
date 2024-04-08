@@ -1,4 +1,4 @@
-// Krop v0.4.6 Copyright (c) 2024 Kori <korinamez@gmail.com> and contributors
+// Krop v0.4.7 Copyright (c) 2024 Kori <korinamez@gmail.com> and contributors
 (function (global, factory) {
   typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory(require('http'), require('https'), require('http2'), require('zlib'), require('assert')) :
   typeof define === 'function' && define.amd ? define(['http', 'https', 'http2', 'zlib', 'assert'], factory) :
@@ -622,7 +622,6 @@
                 return this.decompress(arr_data, headers);
               case 2:
                 data = _context.sent;
-                console.log("data", _typeof(data));
                 try {
                   data = JSON.parse(data);
                 } catch (error) {
@@ -633,7 +632,7 @@
                   }
                 }
                 return _context.abrupt("return", data);
-              case 6:
+              case 5:
               case "end":
                 return _context.stop();
             }

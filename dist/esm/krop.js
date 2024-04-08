@@ -1,4 +1,4 @@
-// Krop v0.4.6 Copyright (c) 2024 Kori <korinamez@gmail.com> and contributors
+// Krop v0.4.7 Copyright (c) 2024 Kori <korinamez@gmail.com> and contributors
 import { request as request$1 } from 'http';
 import { Agent, request as request$2 } from 'https';
 import { constants, connect } from 'http2';
@@ -97,7 +97,7 @@ class RequestManager {
 
   async parseResponseData(arr_data, headers) {
     var data = await this.decompress(arr_data, headers);
-    console.log("data", typeof data);
+
     try {
       data = JSON.parse(data);
     } catch (error) {

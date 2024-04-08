@@ -1,4 +1,4 @@
-// Krop v0.4.6 Copyright (c) 2024 Kori <korinamez@gmail.com> and contributors
+// Krop v0.4.7 Copyright (c) 2024 Kori <korinamez@gmail.com> and contributors
 'use strict';
 
 const http = require('http');
@@ -99,7 +99,7 @@ class RequestManager {
 
   async parseResponseData(arr_data, headers) {
     var data = await this.decompress(arr_data, headers);
-    console.log("data", typeof data);
+
     try {
       data = JSON.parse(data);
     } catch (error) {
