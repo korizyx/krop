@@ -4,7 +4,7 @@ it("proxy work", async () => {
   const { data } = await krop({
     url: "https://api.ipify.org?format=json",
     proxy:
-      "3sxb8ii9dnovu7h-pool-google:9jY8g6Tt1KJcBn2@g2.rainproxy.io:9090",
+      "nngbfhwm-rotate:ymh9v6wum5vx@p.webshare.io:80",
     timeout: 10000,
   });
 

@@ -1,4 +1,4 @@
-// Krop v0.4.7 Copyright (c) 2024 Kori <korinamez@gmail.com> and contributors
+// Krop v0.4.8 Copyright (c) 2024 Kori <korinamez@gmail.com> and contributors
 (function (global, factory) {
   typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory(require('http'), require('https'), require('http2'), require('zlib'), require('assert')) :
   typeof define === 'function' && define.amd ? define(['http', 'https', 'http2', 'zlib', 'assert'], factory) :
@@ -682,34 +682,33 @@
                     socket: options.socket,
                     ciphers: (options === null || options === void 0 ? void 0 : options.ciphers) || null
                   },
-                  request: _objectSpread2(_defineProperty(_defineProperty(_defineProperty(_defineProperty(_defineProperty(_defineProperty(_defineProperty({}, HTTP2_HEADER_AUTHORITY, parsed_url.host), HTTP2_HEADER_PATH, parsed_url.pathname + parsed_url.search || "/"), HTTP2_HEADER_SCHEME, parsed_url.protocol.split(":")[0]), HTTP2_HEADER_METHOD, http2.constants["HTTP2_METHOD_".concat((_options$method = options.method) === null || _options$method === void 0 ? void 0 : _options$method.toUpperCase())]), "Content-Type", "text/plain"), "Content-Length", buffer.length), "Accept", "*/*, image/*"), options === null || options === void 0 ? void 0 : options.headers)
+                  request: _objectSpread2(_defineProperty(_defineProperty(_defineProperty(_defineProperty(_defineProperty(_defineProperty(_defineProperty({}, HTTP2_HEADER_AUTHORITY, parsed_url.host), HTTP2_HEADER_PATH, parsed_url.pathname + parsed_url.search || "/"), HTTP2_HEADER_SCHEME, parsed_url.protocol.split(":")[0]), HTTP2_HEADER_METHOD, http2.constants["HTTP2_METHOD_".concat((_options$method = options.method) === null || _options$method === void 0 ? void 0 : _options$method.toUpperCase())]), "Content-Type", "text/plain"), "Content-Length", buffer.length), "Accept", "*/*, image/*"), options === null || options === void 0 ? void 0 : options.headers),
+                  __Socket: (options === null || options === void 0 ? void 0 : options.socket) || null
                 });
               case 12:
                 if (!options.proxy) {
-                  _context2.next = 21;
+                  _context2.next = 19;
                   break;
                 }
-                _context2.t0 = https.Agent;
-                _context2.next = 16;
+                _context2.next = 15;
                 return this.proxyTunnel(options.url, options.proxy)["catch"](function (error) {
                   throw error;
                 });
-              case 16:
-                _context2.t1 = _context2.sent;
-                _context2.t2 = {
-                  socket: _context2.t1,
+              case 15:
+                options.__Socket = _context2.sent;
+                options.agent = new https.Agent({
+                  socket: options.__Socket,
                   keepAlive: true
-                };
-                options.agent = new _context2.t0(_context2.t2);
-                _context2.next = 22;
+                });
+                _context2.next = 20;
                 break;
-              case 21:
+              case 19:
                 options.agent = new https.Agent(options);
-              case 22:
+              case 20:
                 return _context2.abrupt("return", {
                   url: options.url,
                   payload: buffer,
-                  request: _objectSpread2({
+                  request: _objectSpread2(_objectSpread2({
                     origin: parsed_url.origin,
                     href: parsed_url.href,
                     protocol: parsed_url.protocol || "https:",
@@ -725,20 +724,22 @@
                       "accept-language": "en-US,en;q=0.9",
                       "Content-Length": buffer.length
                     }, options === null || options === void 0 ? void 0 : options.headers)
-                  }, options)
+                  }, options), {}, {
+                    __Socket: (options === null || options === void 0 ? void 0 : options.__Socket) || null
+                  })
                 });
-              case 23:
-                _context2.next = 28;
+              case 21:
+                _context2.next = 26;
                 break;
-              case 25:
-                _context2.prev = 25;
-                _context2.t3 = _context2["catch"](1);
-                throw _context2.t3;
-              case 28:
+              case 23:
+                _context2.prev = 23;
+                _context2.t0 = _context2["catch"](1);
+                throw _context2.t0;
+              case 26:
               case "end":
                 return _context2.stop();
             }
-          }, _callee2, this, [[1, 25]]);
+          }, _callee2, this, [[1, 23]]);
         }));
         function parseOptions() {
           return _parseOptions.apply(this, arguments);
@@ -780,8 +781,9 @@
                         return RequestManager$1.parseResponseData(response_data, res.headers);
                       case 3:
                         res.data = _context.sent;
+                        if (parsed_options.__Socket) parsed_options.__Socket.destroy();
                         resolve(res);
-                      case 5:
+                      case 6:
                       case "end":
                         return _context.stop();
                     }
@@ -836,8 +838,11 @@
                         return RequestManager$1.parseResponseData(response_data, res.headers);
                       case 3:
                         res.data = _context.sent;
+                        if (parsed_options.request.__Socket) {
+                          parsed_options.request.__Socket.destroy();
+                        }
                         resolve(res);
-                      case 5:
+                      case 6:
                       case "end":
                         return _context.stop();
                     }
@@ -899,14 +904,17 @@
                 return _regeneratorRuntime().wrap(function _callee$(_context) {
                   while (1) switch (_context.prev = _context.next) {
                     case 0:
+                      if (parsed_options.__Socket) {
+                        parsed_options.__Socket.destroy();
+                      }
                       req.destroy();
                       clientSession.destroy();
                       _context.t0 = resolve;
                       _context.t1 = headers[HTTP2_HEADER_STATUS];
                       _context.t2 = headers;
-                      _context.next = 7;
+                      _context.next = 8;
                       return RequestManager$1.parseResponseData(response_data, headers);
-                    case 7:
+                    case 8:
                       _context.t3 = _context.sent;
                       _context.t4 = {
                         status: _context.t1,
@@ -914,7 +922,7 @@
                         data: _context.t3
                       };
                       (0, _context.t0)(_context.t4);
-                    case 10:
+                    case 11:
                     case "end":
                       return _context.stop();
                   }

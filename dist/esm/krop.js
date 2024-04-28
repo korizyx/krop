@@ -1,4 +1,4 @@
-// Krop v0.4.7 Copyright (c) 2024 Kori <korinamez@gmail.com> and contributors
+// Krop v0.4.8 Copyright (c) 2024 Kori <korinamez@gmail.com> and contributors
 import { request as request$1 } from 'http';
 import { Agent, request as request$2 } from 'https';
 import { constants, connect } from 'http2';
@@ -149,15 +149,18 @@ class RequestManager {
             Accept: "*/*, image/*",
             ...options?.headers,
           },
+          __Socket: options?.socket || null,
         };
       } else {
         if (options.proxy) {
+          options.__Socket = await this.proxyTunnel(
+            options.url,
+            options.proxy
+          ).catch((error) => {
+            throw error;
+          });
           options.agent = new Agent({
-            socket: await this.proxyTunnel(options.url, options.proxy).catch(
-              (error) => {
-                throw error;
-              }
-            ),
+            socket: options.__Socket,
             keepAlive: true,
           });
         } else {
@@ -185,6 +188,7 @@ class RequestManager {
               ...options?.headers,
             },
             ...options,
+            __Socket: options?.__Socket || null,
           },
         };
       }
@@ -221,6 +225,8 @@ function HTTP(options = {}) {
             res.headers
           );
 
+          if (parsed_options.__Socket) parsed_options.__Socket.destroy();
+
           resolve(res);
         });
       }).on("error", (error) => {
@@ -254,7 +260,10 @@ function HTTPS(options) {
             response_data,
             res.headers
           );
-
+          
+          if (parsed_options.request.__Socket) {
+            parsed_options.request.__Socket.destroy();
+          }
           resolve(res);
         });
       }).on("error", (error) => {
@@ -303,6 +312,9 @@ function HTTP2(options) {
       });
 
       req.on("end", async () => {
+        if (parsed_options.__Socket) {
+          parsed_options.__Socket.destroy();
+        }
         req.destroy();
         clientSession.destroy();
 
